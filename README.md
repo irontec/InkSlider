@@ -1,6 +1,6 @@
 # InkSliderLibraryProject
 
-[![](https://jitpack.io/v/irontec/InkSliderLibrary.svg)](https://jitpack.io/#irontec/InkSliderLibrary)
+[![](https://jitpack.io/v/irontec/InkSlider.svg)](https://jitpack.io/#irontec/InkSlider)
 
 Library to make fancy selector sliders. Indicators can be shown on both sides, one or none. Values and colors are not linked, so you can have a lot more values than colors.
 
