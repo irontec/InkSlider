@@ -16,15 +16,17 @@ Library to make fancy selector sliders. Indicators can be shown on both sides, o
 * *onValueChange*: listener when a value is **displayed**. When the user moves the finger and the value changes.
 * *hardSteps*: Defines if the marker can stop in any place when user press released, or only on some hard points (the center of the realm associated with a value)
 * *enabled*: if view is enabled or disabled.
-* *displayMode*. Values: LEFT, RIGHT, BOTH or NONE.
+* *displayMode*. Values: LEFT, RIGHT, BOTH.
 * *Item*
 * * *value*: **Any**. Put here what you want the user to be able to select.
 * * *display*: **Display** class (below)
 * * *selectable*: If this value is selectable. I use it to add some unselectable values on top or bottom if limits should not be selectable.
 * *Display*
-* * *string*: indicator text value
-* * *textColor*: indicator text color
-* * *icon*: indicator icon
+* * *string*: indicator text value (optional)
+* * *textColor*: indicator text color (optional)
+* * *arrowTintColor*: indicator arrow tint color (optional)
+* * *iconTintColor*: indicator icon tint color (optional)
+* * *icon*: indicator icon (optional)
 
 # Examples
 
