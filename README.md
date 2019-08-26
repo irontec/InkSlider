@@ -4,8 +4,8 @@
 
 Library to make fancy selector sliders. Indicators can be shown on both sides, one or none. Values and colors are not linked, so you can have a lot more values than colors.
 
-![temp gif](https://github.com/irontec/InkSliderLibrary/blob/master/temp.gif)
-![soung gif](https://github.com/irontec/InkSliderLibrary/blob/master/sound.gif)
+![temp gif](https://github.com/irontec/InkSlider/blob/master/temp.gif)
+![soung gif](https://github.com/irontec/InkSlider/blob/master/sound.gif)
 
 # Parametrization
 
@@ -18,15 +18,15 @@ Library to make fancy selector sliders. Indicators can be shown on both sides, o
 * *enabled*: if view is enabled or disabled.
 * *displayMode*. Values: LEFT, RIGHT, BOTH.
 * *Item*
-* * *value*: **Any**. Put here what you want the user to be able to select.
-* * *display*: **Display** class (below)
-* * *selectable*: If this value is selectable. I use it to add some unselectable values on top or bottom if limits should not be selectable.
+  * *value*: **Any**. Put here what you want the user to be able to select.
+  * *display*: **Display** class (below)
+  * *selectable*: If this value is selectable. I use it to add some unselectable values on top or bottom if limits should not be selectable.
 * *Display*
-* * *string*: indicator text value (optional)
-* * *textColor*: indicator text color (optional)
-* * *arrowTintColor*: indicator arrow tint color (optional)
-* * *iconTintColor*: indicator icon tint color (optional)
-* * *icon*: indicator icon (optional)
+  * *string*: indicator text value (optional)
+  * *textColor*: indicator text color (optional)
+  * *arrowTintColor*: indicator arrow tint color (optional)
+  * *iconTintColor*: indicator icon tint color (optional)
+  * *icon*: indicator icon (optional)
 
 # Examples
 
