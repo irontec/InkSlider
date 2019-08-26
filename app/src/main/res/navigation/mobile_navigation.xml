@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/mobile_navigation"
+	app:startDestination="@+id/nav_temperature">
+
+	<fragment
+		android:id="@+id/nav_sound"
+		android:name="com.inlacou.inksliderlibraryproject.ui.fragments.sound.SoundFragment"
+		android:label="@string/menu_sound"
+		tools:layout="@layout/fragment_sound" />
+
+	<fragment
+		android:id="@+id/nav_temperature"
+		android:name="com.inlacou.inksliderlibraryproject.ui.fragments.temperature.TemperatureFragment"
+		android:label="@string/menu_temperature"
+		tools:layout="@layout/fragment_temperature" />
+
+</navigation>

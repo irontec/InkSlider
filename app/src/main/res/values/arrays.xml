@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<integer-array name="sounds">
+		<item>@drawable/ic_volume_max</item>
+		<item>@drawable/ic_volume_max</item>
+		<item>@drawable/ic_volume_max</item>
+		<item>@drawable/ic_volume_max</item>
+		<item>@drawable/ic_volume_max</item>
+		<item>@drawable/ic_volume_max</item>
+		<item>@drawable/ic_volume_max</item>
+		<item>@drawable/ic_volume_high</item>
+		<item>@drawable/ic_volume_high</item>
+		<item>@drawable/ic_volume_high</item>
+		<item>@drawable/ic_volume_high</item>
+		<item>@drawable/ic_volume_high</item>
+		<item>@drawable/ic_volume_high</item>
+		<item>@drawable/ic_volume_medium</item>
+		<item>@drawable/ic_volume_medium</item>
+		<item>@drawable/ic_volume_medium</item>
+		<item>@drawable/ic_volume_medium</item>
+		<item>@drawable/ic_volume_min</item>
+		<item>@drawable/ic_volume_min</item>
+		<item>@drawable/ic_volume_min</item>
+		<item>@drawable/ic_volume_min</item>
+		<item>@drawable/ic_volume_min</item>
+	</integer-array>
+</resources>

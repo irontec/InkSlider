@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="colorPrimary">#008577</color>
+	<color name="colorPrimaryDark">#00574B</color>
+	<color name="colorAccent">#D81B60</color>
+
+	<color name="white_basic">#FFFFFF</color>
+	<color name="black_basic">#000000</color>
+
+	<array name="temperature_slider">
+		<item>@color/temp_0</item>
+		<item>@color/temp_1</item>
+		<item>@color/temp_2</item>
+		<item>@color/temp_3</item>
+		<item>@color/temp_4</item>
+		<item>@color/temp_5</item>
+		<item>@color/temp_6</item>
+		<item>@color/temp_7</item>
+		<item>@color/temp_8</item>
+		<item>@color/temp_9</item>
+		<item>@color/temp_10</item>
+	</array>
+
+	<color name="temp_0">#ffffe0</color>
+	<color name="temp_1">#ffeebe</color>
+	<color name="temp_2">#ffe0a3</color>
+	<color name="temp_3">#ffd591</color>
+	<color name="temp_4">#fccd86</color>
+	<color name="temp_5">#f6c884</color>
+	<color name="temp_6">#efc688</color>
+	<color name="temp_7">#e6c695</color>
+	<color name="temp_8">#d9c9a8</color>
+	<color name="temp_9">#c8cfc3</color>
+	<color name="temp_10">#add8e6</color>
+
+	<array name="sound_slider">
+		<item>@color/sound_0</item>
+		<item>@color/sound_1</item>
+		<item>@color/sound_2</item>
+		<item>@color/sound_3</item>
+		<item>@color/sound_4</item>
+		<item>@color/sound_5</item>
+		<item>@color/sound_6</item>
+		<item>@color/sound_7</item>
+		<item>@color/sound_8</item>
+		<item>@color/sound_9</item>
+		<item>@color/sound_10</item>
+	</array>
+
+	<color name="sound_0">#d3d3d3</color>
+	<color name="sound_1">#bcbcbc</color>
+	<color name="sound_2">#a5a5a5</color>
+	<color name="sound_3">#8e8e8e</color>
+	<color name="sound_4">#797979</color>
+	<color name="sound_5">#646464</color>
+	<color name="sound_6">#505050</color>
+	<color name="sound_7">#3c3c3c</color>
+	<color name="sound_8">#2a2a2a</color>
+	<color name="sound_9">#181818</color>
+	<color name="sound_10">#000000</color>
+
+</resources>

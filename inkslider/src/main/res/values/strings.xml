@@ -1,0 +1,5 @@
+<resources>
+	<string name="app_name">InkSlider</string>
+	<string name="button_to_increase_value">Button to increase value</string>
+	<string name="button_to_decrease_value">Button to decrease value</string>
+</resources>

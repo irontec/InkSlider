@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="colorprimary">#008577</color>
+	<color name="colorprimaryripple">#00574B</color>
+	<color name="inkslider_text_color">#FFF</color>
+	<color name="inkslider_plus_minus_button_color">@color/colorprimary</color>
+	<color name="inkslider_plus_minus_button_color_ripple">@color/colorprimaryripple</color>
+	<color name="inkslider_plus_minus_button_icon_color">#FFF</color>
+	<color name="inkslider_indicator_arrow_color">#FFF</color>
+</resources>
