@@ -65,11 +65,12 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 	val items get() = model.values
 	var currentItem: InkSliderMdl.Item
 		get() = model.currentItem
-		set(value) {
+		private set(value) {
 			if(model.currentItem!=value){
 				model.currentItem = value
+				forceUpdate()
+				controller.onCurrentItemChanged(value, false)
 			}
-			updateDisplays()
 		}
 	
 	/* Virtual variables for cleaner code */
@@ -108,20 +109,29 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 		linearLayoutColors?.startAnimation(animation)
 	}
 	
-	fun setCurrentItemByIndex(volume: Int) {
+	fun setCurrentItemByIndex(volume: Int, fireListener: Boolean) {
 		if(currentItem.display!=items[volume].display) {
-			currentItem = items[volume]
+			model.currentItem = items[volume]
 			forceUpdate()
+			model.onValueSet?.invoke(model.currentItem, fireListener)
+		}
+	}
+	
+	fun setCurrentItem(item: InkSliderMdl.Item, fireListener: Boolean) {
+		if(currentItem.display!=item.display) {
+			model.currentItem = item
+			forceUpdate()
+			model.onValueSet?.invoke(model.currentItem, fireListener)
 		}
 	}
 	
 	/**
-	 * Returns whether component is enabled or not
+	 * Returns whether the component is enabled or not
 	 */
 	override fun isEnabled(): Boolean = model.enabled
 	
 	/**
-	 * Changes component enabled state and updates it accordingly
+	 * Changes the component enabled state and updates it accordingly
 	 */
 	override fun setEnabled(enabled: Boolean) {
 		val changed = enabled!=model.enabled
@@ -234,7 +244,8 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 			if(currentItem!=newItem) {
 				controller.onCurrentItemChanged(newItem, true)
 			}
-			currentItem = newItem
+			model.currentItem = newItem
+			updateDisplays()
 			
 			when(event.action){
 				android.view.MotionEvent.ACTION_DOWN -> {
@@ -265,7 +276,7 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 		linearLayoutDisplayRight?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.RIGHT || model.displayMode==InkSliderMdl.DisplayMode.BOTH, true)
 		
 		//Style display
-		currentItem.display.let { display ->
+		model.currentItem.display.let { display ->
 			//Set display text
 			display.string.let {
 				if (it != null) {

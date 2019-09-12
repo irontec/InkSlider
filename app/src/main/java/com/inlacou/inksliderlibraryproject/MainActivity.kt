@@ -20,6 +20,7 @@ import com.inlacou.inksliderlibraryproject.ui.fragments.sound.SoundFragment
 
 class MainActivity : AppCompatActivity() {
 	
+	private var currentFragment: Fragment? = null
 	private lateinit var appBarConfiguration: AppBarConfiguration
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,8 +31,13 @@ class MainActivity : AppCompatActivity() {
 		
 		val fab: FloatingActionButton = findViewById(R.id.fab)
 		fab.setOnClickListener { view ->
-			Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-					.setAction("Action", null).show()
+			currentFragment?.let {
+				if(it is SoundFragment) {
+					it.value = it.values?.get((0 until (it.values?.size ?: 2)).shuffled().first())
+				} else if(it is TemperatureFragment) {
+					it.value = it.values?.get((0 until (it.values?.size ?: 2)).shuffled().first())
+				}
+			}
 		}
 		val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
 		val navView: NavigationView = findViewById(R.id.nav_view)
@@ -51,6 +57,7 @@ class MainActivity : AppCompatActivity() {
 				R.id.nav_sound -> fragment = SoundFragment()
 				R.id.nav_temperature -> fragment = TemperatureFragment()
 			}
+			currentFragment = fragment
 			loadFragment(fragment)
 			drawerLayout.closeDrawer(GravityCompat.START)
 			true

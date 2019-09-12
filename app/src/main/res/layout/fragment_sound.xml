@@ -5,6 +5,7 @@
 	android:background="@color/black_basic">
 
 	<com.inlacou.inksliderlibraryproject.ui.sliders.BasicSoundSlider
+		android:id="@+id/sound_slider"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
