@@ -20,7 +20,7 @@ import com.inlacou.inksliderlibraryproject.ui.fragments.sound.SoundFragment
 
 class MainActivity : AppCompatActivity() {
 	
-	private var currentFragment: Fragment? = null
+	var currentFragment: Fragment? = null
 	private lateinit var appBarConfiguration: AppBarConfiguration
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,35 +33,38 @@ class MainActivity : AppCompatActivity() {
 		fab.setOnClickListener { view ->
 			currentFragment?.let {
 				if(it is SoundFragment) {
-					it.value = it.values?.get((0 until (it.values?.size ?: 2)).shuffled().first())
+					it.setValue(it.values?.get((0 until (it.values?.size ?: 2)).shuffled().first()), false)
 				} else if(it is TemperatureFragment) {
-					it.value = it.values?.get((0 until (it.values?.size ?: 2)).shuffled().first())
+					it.setValue(it.values?.get((0 until (it.values?.size ?: 2)).shuffled().first()), false)
 				}
 			}
 		}
 		val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
 		val navView: NavigationView = findViewById(R.id.nav_view)
-		val navController = findNavController(R.id.nav_host_fragment)
 		// Passing each menu ID as a set of Ids because each
 		// menu should be considered as top level destinations.
 		appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_sound, R.id.nav_temperature), drawerLayout)
-		setupActionBarWithNavController(navController, appBarConfiguration)
-		navView.setupWithNavController(navController)
 		
 		//Wtf listener not working without this line
 		navView.bringToFront()
 		
 		navView.setNavigationItemSelectedListener {
-			var fragment: Fragment? = null
-			when(it.itemId){
-				R.id.nav_sound -> fragment = SoundFragment()
-				R.id.nav_temperature -> fragment = TemperatureFragment()
-			}
-			currentFragment = fragment
-			loadFragment(fragment)
+			loadFragment(it.itemId)
 			drawerLayout.closeDrawer(GravityCompat.START)
 			true
 		}
+		
+		loadFragment(R.id.nav_temperature)
+	}
+	
+	private fun loadFragment(id: Int) {
+		var fragment: Fragment? = null
+		when(id){
+			R.id.nav_sound -> fragment = SoundFragment()
+			R.id.nav_temperature -> fragment = TemperatureFragment()
+		}
+		currentFragment = fragment
+		loadFragment(fragment)
 	}
 	
 	private fun loadFragment(fragment: Fragment?){
@@ -79,8 +82,4 @@ class MainActivity : AppCompatActivity() {
 		return true
 	}
 	
-	override fun onSupportNavigateUp(): Boolean {
-		val navController = findNavController(R.id.nav_host_fragment)
-		return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-	}
 }

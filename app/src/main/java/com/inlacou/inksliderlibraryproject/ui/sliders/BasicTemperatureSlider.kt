@@ -9,8 +9,8 @@ import com.inlacou.inksliderlibraryproject.R
 class BasicTemperatureSlider @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
 	: InkSlider(context, attrs, defStyleAttr){
 	
-	private var onValueSet: ((InkSliderMdl.Item, fromUser: Boolean) -> Unit)? = null
-	private var onValueChange: ((InkSliderMdl.Item, fromUser: Boolean) -> Unit)? = null
+	var onValueSet: ((InkSliderMdl.Item, fromUser: Boolean) -> Unit)? = null
+	var onValueChange: ((InkSliderMdl.Item, fromUser: Boolean) -> Unit)? = null
 	private val colors = context.resources?.getIntArray(R.array.temperature_slider)?.toList() ?: listOf()
 	private val temperatures: List<InkSliderMdl.Item>
 	
