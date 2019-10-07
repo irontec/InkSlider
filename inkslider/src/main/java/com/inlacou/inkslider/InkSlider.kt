@@ -84,7 +84,7 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 		populate()
 	}
 	
-	protected fun initialize() { //275B83
+	protected fun initialize() {
 		val rootView = View.inflate(context, R.layout.view_ink_slider_ripple, this)
 		initialize(rootView)
 	}
@@ -237,9 +237,9 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 			val roughStep = (relativePosition/stepSize)
 			val step = (relativePosition/stepSize).roundToInt()
 			val newItem = when {
-				step<=0 -> controller.getFirstSelectable(model.values)
-				step>=model.values.size -> controller.getLastSelectable(model.values)
-				else -> controller.getNearestSelectable(roughIndex = roughStep, items = model.values)
+				step<=0 -> model.values.getFirstSelectable()
+				step>=model.values.size -> model.values.getLastSelectable()
+				else -> model.values.getNearestSelectable(roughIndex = roughStep)
 			}
 			if(currentItem!=newItem) {
 				controller.onCurrentItemChanged(newItem, true)
@@ -345,79 +345,5 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 		clearDisplays()
 	}
 	
-	/* View extensions */
-	private fun View.getCoordinates(): Rect {
-		val offsetViewBounds = Rect()
-		//returns the visible bounds
-		getDrawingRect(offsetViewBounds)
-		// calculates the relative coordinates to the parent
-		parent?.let {
-			if(it is ViewGroup) it.offsetDescendantRectToMyCoords(this, offsetViewBounds)
-		}
-		return offsetViewBounds
-	}
-	
-	private fun View?.setVisible(visible: Boolean, holdSpaceOnDissapear: Boolean = false) {
-		if (this == null) return
-		if(visible){
-			this.visibility = View.VISIBLE
-		}else{
-			if(holdSpaceOnDissapear){
-				this.visibility = View.INVISIBLE
-			}else{
-				this.visibility = View.GONE
-			}
-		}
-	}
-	
-	private fun View.setMargins(left: Int? = null, top: Int? = null, right: Int? = null, bottom: Int? = null) {
-		if (layoutParams is MarginLayoutParams) {
-			val p = layoutParams as MarginLayoutParams
-			p.setMargins(left ?: p.leftMargin, top ?: p.topMargin, right ?: p.rightMargin, bottom ?: p.bottomMargin)
-			requestLayout()
-		}
-	}
-	
-	private fun ImageView.setDrawableRes(resId: Int){
-		this.setImageDrawable(resources.getDrawableCompat(resId))
-	}
-	
-	private fun Resources.getDrawableCompat(resId: Int): Drawable {
-		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			getDrawable(resId, null)
-		}else{
-			getDrawable(resId)
-		}
-	}
-	
-	/**
-	 * Called on onGlobalLayout called from ViewTreeObserver.OnGlobalLayoutListener
-	 */
-	private fun View.onDrawn(callback: () -> Unit){
-		val listener = object : ViewTreeObserver.OnGlobalLayoutListener {
-			override fun onGlobalLayout() {
-				viewTreeObserver?.removeOnGlobalLayoutListener(this)
-				callback.invoke()
-			}
-		}
-		viewTreeObserver?.addOnGlobalLayoutListener(listener)
-	}
-	
-	private fun ImageView.tint(colorResId: Int){
-		ImageViewCompat.setImageTintList(this, ColorStateList.valueOf(this.context.getColorCompat(colorResId)))
-	}
-	
-	private fun Context.getColorCompat(resId: Int): Int {
-		return resources.getColorCompat(resId)
-	}
-	
-	private fun Resources.getColorCompat(resId: Int): Int {
-		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			getColor(resId, null)
-		}else{
-			getColor(resId)
-		}
-	}
-	/* /View extensions */
 }
 
