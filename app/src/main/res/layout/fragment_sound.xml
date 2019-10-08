@@ -6,7 +6,7 @@
 	android:layout_height="match_parent"
 	android:background="@color/black_basic">
 
-	<com.inlacou.inksliderlibraryproject.ui.sliders.BasicSoundSlider
+	<com.inlacou.inksliderlibraryproject.ui.sliders.BasicSoundSliderVertical
 		android:id="@+id/sound_slider"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"

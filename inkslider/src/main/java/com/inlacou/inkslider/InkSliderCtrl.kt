@@ -1,6 +1,6 @@
 package com.inlacou.inkslider
 
-class InkSliderCtrl(val view: InkSlider, var model: InkSliderMdl) {
+class InkSliderCtrl(val view: VerticalInkSlider, var model: InkSliderMdl) {
 	
 	/* Action forwarding */
 	fun onValueSet(fromUser: Boolean) {

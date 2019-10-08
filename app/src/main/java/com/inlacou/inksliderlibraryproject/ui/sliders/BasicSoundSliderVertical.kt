@@ -2,12 +2,12 @@ package com.inlacou.inksliderlibraryproject.ui.sliders
 
 import android.content.Context
 import android.util.AttributeSet
-import com.inlacou.inkslider.InkSlider
+import com.inlacou.inkslider.VerticalInkSlider
 import com.inlacou.inkslider.InkSliderMdl
 import com.inlacou.inksliderlibraryproject.R
 
-class BasicSoundSlider @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-	: InkSlider(context, attrs, defStyleAttr) {
+class BasicSoundSliderVertical @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+	: VerticalInkSlider(context, attrs, defStyleAttr) {
 	
 	var onValueSet: ((InkSliderMdl.Item, fromUser: Boolean) -> Unit)? = null
 	var onValueChange: ((InkSliderMdl.Item, fromUser: Boolean) -> Unit)? = null

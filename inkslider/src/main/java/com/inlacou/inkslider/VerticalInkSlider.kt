@@ -2,29 +2,21 @@ package com.inlacou.inkslider
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
-import android.content.res.Resources
-import android.graphics.Canvas
-import android.graphics.Rect
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.view.animation.AnimationUtils
 import android.widget.*
-import androidx.core.widget.ImageViewCompat
 import com.inlacou.pripple.RippleLinearLayout
 import kotlin.math.roundToInt
-import kotlin.math.sign
 
-open class InkSlider @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
 	: FrameLayout(context, attrs, defStyleAttr) {
 	
-	private var currentHeight: Float? = null
+	open val orientation = InkSliderMdl.Orientation.VERTICAL
+	
+	private var currentPosition: Float? = null
 	private var plus: View? = null
 	private var minus: View? = null
 	private var surfaceLayout: RelativeLayout? = null
@@ -66,7 +58,7 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 			populate()
 		}
 	private lateinit var controller: InkSliderCtrl
-	val items get() = model.values
+	val items get() = if(model.reverse) model.values.asReversed() else model.values
 	var currentItem: InkSliderMdl.Item
 		get() = model.currentItem
 		private set(value) {
@@ -79,7 +71,10 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 	
 	/* Virtual variables for cleaner code */
 	private val realHeight get() = linearLayoutColors?.height ?: height
-	private val stepSize get() = realHeight/(model.values.size)
+	private val realWidth get() = linearLayoutColors?.width ?: width
+	private val stepSize get() = when(orientation) {
+		InkSliderMdl.Orientation.VERTICAL -> realHeight/(items.size)
+		InkSliderMdl.Orientation.HORIZONTAL -> realWidth/(items.size) }
 	private val topSpacing get() = linearLayoutColors?.getCoordinates()?.top ?: 0
 	
 	init {
@@ -88,7 +83,7 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 		populate()
 	}
 	
-	protected fun initialize() {
+	protected open fun initialize() {
 		val rootView = View.inflate(context, R.layout.view_ink_slider_ripple, this)
 		initialize(rootView)
 	}
@@ -99,7 +94,7 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 	}
 	
 	protected fun populate() {
-		Log.d("populate", "values: ${model.values.size} | colors: ${model.colors.size}")
+		Log.d("populate", "values: ${items.size} | colors: ${model.colors.size}")
 		clearItems()
 		addItems()
 		clearDisplays()
@@ -166,10 +161,11 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 	 * Adds an item to the linearLayout for each color in model colors array
 	 */
 	private fun addItems() {
+		val colors = if(model.reverse) model.colors.asReversed() else model.colors
 		if(model.colorMode==InkSliderMdl.ColorMode.GRADIENT) {
-			model.colors.forEachIndexed { index: Int, item: Int -> addIcon(if (index > 0) model.colors[index - 1] else item, item) }
+			colors.forEachIndexed { index: Int, item: Int -> addIcon(if (index > 0) colors[index - 1] else item, item) }
 		}else{
-			model.colors.forEach { addIcon(it) }
+			colors.forEach { addIcon(it) }
 		}
 	}
 	
@@ -181,7 +177,12 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 		linearLayoutColors?.addView(view)
 		view.apply {
 			setBackgroundColor(colorResId)
-			layoutParams = (layoutParams).apply { height = resources.getDimension(R.dimen.inkslider_row_height).toInt() }
+			layoutParams = (layoutParams).apply {
+				when(orientation) {
+					InkSliderMdl.Orientation.VERTICAL -> height = resources.getDimension(R.dimen.inkslider_row_height).toInt()
+					InkSliderMdl.Orientation.HORIZONTAL -> width = resources.getDimension(R.dimen.inkslider_row_height).toInt()
+				}
+			}
 		}
 	}
 	
@@ -192,9 +193,13 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 		val view = View(context)
 		linearLayoutColors?.addView(view)
 		view.apply {
-			//setBackgroundColor(colorResId)
 			background = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(colorResId, secondColorResId))
-			layoutParams = (layoutParams).apply { height = resources.getDimension(R.dimen.inkslider_row_height).toInt() }
+			layoutParams = (layoutParams).apply {
+				when(orientation) {
+					InkSliderMdl.Orientation.VERTICAL -> height = resources.getDimension(R.dimen.inkslider_row_height).toInt()
+					InkSliderMdl.Orientation.HORIZONTAL -> width = resources.getDimension(R.dimen.inkslider_row_height).toInt()
+				}
+			}
 		}
 	}
 	
@@ -254,14 +259,17 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 		
 		//Touch listener
 		linearLayoutColors?.setOnTouchListener { _, event ->
-			val relativePosition = event.y //reaches 0 at top linearLayoutColors and goes on the minus realm if you keep going up
-			currentHeight = relativePosition
+			val relativePosition = when(orientation){
+				InkSliderMdl.Orientation.VERTICAL -> event.y
+				InkSliderMdl.Orientation.HORIZONTAL -> event.x
+			} //reaches 0 at top linearLayoutColors and goes on the minus realm if you keep going up
+			currentPosition = relativePosition
 			val roughStep = (relativePosition/stepSize)
 			val step = (relativePosition/stepSize).roundToInt()
 			val newItem = when {
-				step<=0 -> model.values.getFirstSelectable()
-				step>=model.values.size -> model.values.getLastSelectable()
-				else -> model.values.getNearestSelectable(roughIndex = roughStep)
+				step<=0 -> items.getFirstSelectable()
+				step>=items.size -> items.getLastSelectable()
+				else -> items.getNearestSelectable(roughIndex = roughStep)
 			}
 			if(currentItem!=newItem) {
 				controller.onCurrentItemChanged(newItem, true)
@@ -287,15 +295,15 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 	
 	internal fun forceUpdate() {
 		val currentItemPos = model.values.indexOf(model.currentItem)
-		currentHeight = (stepSize*(currentItemPos)).toFloat()
+		currentPosition = (stepSize*(currentItemPos)).toFloat()
 		updateDisplays()
 		controller.onValueSet(false)
 	}
 	
 	private fun updateDisplays() {
 		//Shows/hides displays depending on current DisplayMode
-		linearLayoutDisplayLeft?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.LEFT || model.displayMode==InkSliderMdl.DisplayMode.BOTH, true)
-		linearLayoutDisplayRight?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.RIGHT || model.displayMode==InkSliderMdl.DisplayMode.BOTH, true)
+		linearLayoutDisplayLeft?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.LEFT_TOP || model.displayMode==InkSliderMdl.DisplayMode.BOTH, true)
+		linearLayoutDisplayRight?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.RIGHT_BOTTOM || model.displayMode==InkSliderMdl.DisplayMode.BOTH, true)
 		
 		//Style display
 		model.currentItem.display.let { display ->
@@ -335,10 +343,25 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 		}
 		
 		//Set display position
-		currentHeight?.toInt()?.let {
-			if (it in 1 until (linearLayoutColors?.height ?: height)) {
-				linearLayoutDisplayLeft?.setMargins(top = it-((linearLayoutDisplayLeft?.height?:0)/2)+topSpacing)
-				linearLayoutDisplayRight?.setMargins(top = it-((linearLayoutDisplayLeft?.height?:0)/2)+topSpacing)
+		when(orientation){
+			InkSliderMdl.Orientation.HORIZONTAL -> {
+				currentPosition?.toInt()?.let {
+					if (it in 1 until (linearLayoutColors?.width ?: width)) {
+						val value = it-((linearLayoutDisplayLeft?.width?:0)/2)
+						linearLayoutDisplayLeft?.setPaddings(left = value)
+						linearLayoutDisplayRight?.setPaddings(left = value)
+					}
+				}
+			}
+			InkSliderMdl.Orientation.VERTICAL -> {
+				currentPosition?.toInt()?.let {
+					if (it in 1 until (linearLayoutColors?.height ?: height)) {
+						val value = it-((linearLayoutDisplayLeft?.height?:0)/2)+topSpacing
+						Log.d("currentPosition?", "$value")
+						linearLayoutDisplayLeft?.setMargins(top = value)
+						linearLayoutDisplayRight?.setMargins(top = value)
+					}
+				}
 			}
 		}
 	}

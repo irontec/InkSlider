@@ -21,7 +21,19 @@
 		<item>@color/temp_10</item>
 	</array>
 
-	<color name="temp_0">#ffffe0</color>
+	<color name="temp_0">#00ff00</color>
+	<color name="temp_1">#ff0000</color>
+	<color name="temp_2">#ff00ff</color>
+	<color name="temp_3">#ffff00</color>
+	<color name="temp_4">#0000ff</color>
+	<color name="temp_5">#00ffff</color>
+	<color name="temp_6">#efc688</color>
+	<color name="temp_7">#e6c695</color>
+	<color name="temp_8">#d9c9a8</color>
+	<color name="temp_9">#c8cfc3</color>
+	<color name="temp_10">#add8e6</color>
+
+	<!--<color name="temp_0">#ffffe0</color>
 	<color name="temp_1">#ffeebe</color>
 	<color name="temp_2">#ffe0a3</color>
 	<color name="temp_3">#ffd591</color>
@@ -31,7 +43,7 @@
 	<color name="temp_7">#e6c695</color>
 	<color name="temp_8">#d9c9a8</color>
 	<color name="temp_9">#c8cfc3</color>
-	<color name="temp_10">#add8e6</color>
+	<color name="temp_10">#add8e6</color>-->
 
 	<array name="sound_slider">
 		<item>@color/sound_0</item>
