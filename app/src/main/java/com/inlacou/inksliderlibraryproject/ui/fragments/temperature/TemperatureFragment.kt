@@ -33,9 +33,9 @@ class TemperatureFragment : Fragment() {
 	): View? {
 		val rootView = inflater.inflate(R.layout.fragment_temperature, container, false)
 		
-		tempSlider = rootView.findViewById<BasicTemperatureSlider>(R.id.temp_slider)
-		tvDisplay = rootView.findViewById<TextView>(R.id.tv_display)
-		tvDisplayRealtime = rootView.findViewById<TextView>(R.id.tv_display_realtime)
+		tempSlider = rootView.findViewById(R.id.temp_slider)
+		tvDisplay = rootView.findViewById(R.id.tv_display)
+		tvDisplayRealtime = rootView.findViewById(R.id.tv_display_realtime)
 		
 		tempSlider?.onValueSet = { item: InkSliderMdl.Item, fromUser: Boolean ->
 			tvDisplay?.text = item.display.string

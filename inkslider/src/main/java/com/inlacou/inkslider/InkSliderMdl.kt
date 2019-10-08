@@ -18,6 +18,10 @@ data class InkSliderMdl(
 		 */
 		val displayMode: DisplayMode = DisplayMode.BOTH,
 		/**
+		 * How to display colors
+		 */
+		val colorMode: ColorMode = ColorMode.NORMAL,
+		/**
 		 * Called on value change (once, on button click or on press release)
 		 */
 		val onValueSet: ((item: Item, fromUser: Boolean) -> Unit)? = null,
@@ -35,6 +39,7 @@ data class InkSliderMdl(
 		var enabled: Boolean = true
 ){
 	enum class DisplayMode { LEFT, RIGHT, BOTH }
+	enum class ColorMode { NORMAL, GRADIENT }
 	data class Item(val value: Any, val display: Display, val selectable: Boolean = true)
 	data class Display(
 			val string: String? = null,

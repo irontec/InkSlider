@@ -32,9 +32,9 @@ class SoundFragment : Fragment() {
 	): View? {
 		val rootView = inflater.inflate(R.layout.fragment_sound, container, false)
 		
-		soundSlider = rootView.findViewById<BasicSoundSlider>(R.id.sound_slider)
-		tvDisplay = rootView.findViewById<TextView>(R.id.tv_display)
-		tvDisplayRealtime = rootView.findViewById<TextView>(R.id.tv_display_realtime)
+		soundSlider = rootView.findViewById(R.id.sound_slider)
+		tvDisplay = rootView.findViewById(R.id.tv_display)
+		tvDisplayRealtime = rootView.findViewById(R.id.tv_display_realtime)
 		
 		soundSlider?.onValueSet = { item: InkSliderMdl.Item, fromUser: Boolean ->
 			tvDisplay?.text = item.display.string

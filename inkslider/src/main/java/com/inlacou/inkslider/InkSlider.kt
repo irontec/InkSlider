@@ -4,10 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -16,6 +19,7 @@ import android.widget.*
 import androidx.core.widget.ImageViewCompat
 import com.inlacou.pripple.RippleLinearLayout
 import kotlin.math.roundToInt
+import kotlin.math.sign
 
 open class InkSlider @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
 	: FrameLayout(context, attrs, defStyleAttr) {
@@ -95,6 +99,7 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 	}
 	
 	protected fun populate() {
+		Log.d("populate", "values: ${model.values.size} | colors: ${model.colors.size}")
 		clearItems()
 		addItems()
 		clearDisplays()
@@ -161,7 +166,11 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 	 * Adds an item to the linearLayout for each color in model colors array
 	 */
 	private fun addItems() {
-		model.colors.forEach{ addIcon(it) }
+		if(model.colorMode==InkSliderMdl.ColorMode.GRADIENT) {
+			model.colors.forEachIndexed { index: Int, item: Int -> addIcon(if (index > 0) model.colors[index - 1] else item, item) }
+		}else{
+			model.colors.forEach { addIcon(it) }
+		}
 	}
 	
 	/**
@@ -172,6 +181,19 @@ open class InkSlider @JvmOverloads constructor(context: Context, attrs: Attribut
 		linearLayoutColors?.addView(view)
 		view.apply {
 			setBackgroundColor(colorResId)
+			layoutParams = (layoutParams).apply { height = resources.getDimension(R.dimen.inkslider_row_height).toInt() }
+		}
+	}
+	
+	/**
+	 * Adds an icon to the linearLayout with provided {@param colorResId} background color
+	 */
+	private fun addIcon(colorResId: Int, secondColorResId: Int) {
+		val view = View(context)
+		linearLayoutColors?.addView(view)
+		view.apply {
+			//setBackgroundColor(colorResId)
+			background = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(colorResId, secondColorResId))
 			layoutParams = (layoutParams).apply { height = resources.getDimension(R.dimen.inkslider_row_height).toInt() }
 		}
 	}
