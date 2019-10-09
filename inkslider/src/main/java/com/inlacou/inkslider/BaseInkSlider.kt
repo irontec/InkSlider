@@ -52,7 +52,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			populate()
 		}
 	private lateinit var controller: InkSliderCtrl
-	val items get() = if(model.reverse) model.values.asReversed() else model.values
+	val items get() = if(reversed) model.values.asReversed() else model.values
 	var currentItem: InkSliderMdl.Item
 		get() = model.currentItem
 		private set(value) {
@@ -65,6 +65,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	
 	/* Virtual variables for cleaner code */
 	
+	private val reversed get() = model.reverse xor (orientation==InkSliderMdl.Orientation.HORIZONTAL)
 	private val colorRowSize get() = resources.getDimension(R.dimen.inkslider_row_height).toInt()
 	private val totalSize get() = model.colors.size*colorRowSize
 	private val stepSize get() = totalSize/(items.size)
@@ -167,7 +168,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	 * Adds an item to the linearLayout for each color in model colors array
 	 */
 	private fun addItems() {
-		val colors = if(model.reverse) model.colors.asReversed() else model.colors
+		val colors = if(reversed) model.colors.asReversed() else model.colors
 		if(model.colorMode==InkSliderMdl.ColorMode.GRADIENT) {
 			colors.forEachIndexed { index: Int, item: Int -> addIcon(if (index > 0) colors[index - 1] else item, item) }
 		}else{
@@ -270,7 +271,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 				InkSliderMdl.Orientation.HORIZONTAL -> event.x
 			} //reaches 0 at top linearLayoutColors and goes on the minus realm if you keep going up
 			currentPosition = relativePosition
-			val roughStep = if(model.reverse) (relativePosition/stepSize)-1 else (relativePosition/stepSize)
+			val roughStep = if(reversed) (relativePosition/stepSize)-1 else (relativePosition/stepSize)
 			val step = (relativePosition/stepSize).roundToInt()
 			val newItem = when {
 				step<=0 -> items.getFirstSelectable()
@@ -301,7 +302,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	
 	internal fun forceUpdate() {
 		val currentItemPos = model.values.indexOf(model.currentItem)
-		currentPosition = if(model.reverse) {
+		currentPosition = if(reversed) {
 			totalSize-(stepSize*currentItemPos)
 		}else{
 			stepSize*currentItemPos
