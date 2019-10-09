@@ -25,7 +25,7 @@ class BasicSoundSliderBase @JvmOverloads constructor(context: Context, attrs: At
 			model = InkSliderMdl(
 					colors = colors
 					, values = sounds
-					, displayMode = InkSliderMdl.DisplayMode.BOTH_SIDES
+					, displayMode = InkSliderMdl.DisplayMode.RIGHT_BOTTOM
 					, onValueSet = { item: InkSliderMdl.Item, b: Boolean ->
 				onValueSet?.invoke(item, b)
 			}, onValueChange = { item: InkSliderMdl.Item, b: Boolean ->

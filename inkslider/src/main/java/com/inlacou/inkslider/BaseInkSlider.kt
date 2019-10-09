@@ -19,8 +19,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private var currentPosition: Float? = null
 	private var surfaceLayout: RelativeLayout? = null
 	private var linearLayoutColors: LinearLayout? = null
-	private var linearLayoutDisplayLeft: View? = null
-	private var linearLayoutDisplayRight: View? = null
+	private var linearLayoutDisplayTopLeft: View? = null
+	private var linearLayoutDisplayBottomRight: View? = null
 	private var linearLayoutDisplayCenter: View? = null
 	private var tvDisplayLeft: TextView? = null
 	private var tvDisplayRight: TextView? = null
@@ -34,8 +34,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private fun bindViews() {
 		surfaceLayout = findViewById(R.id.view_base_layout_surface)
 		linearLayoutColors = findViewById(R.id.linearLayout_colors)
-		linearLayoutDisplayLeft = findViewById(R.id.linearLayout_display_top_left)
-		linearLayoutDisplayRight = findViewById(R.id.linearLayout_display_bottom_right)
+		linearLayoutDisplayTopLeft = findViewById(R.id.linearLayout_display_top_left)
+		linearLayoutDisplayBottomRight = findViewById(R.id.linearLayout_display_bottom_right)
 		linearLayoutDisplayCenter = findViewById(R.id.linearLayout_display_center)
 		tvDisplayLeft = findViewById(R.id.tv_display_left)
 		tvDisplayRight = findViewById(R.id.tv_display_right)
@@ -67,6 +67,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	
 	/* Virtual variables for cleaner code */
 	
+	private val visibleTopLeft get() = model.displayMode==InkSliderMdl.DisplayMode.LEFT_TOP || model.displayMode==InkSliderMdl.DisplayMode.BOTH_SIDES
+	private val visibleBottomRight get() = model.displayMode==InkSliderMdl.DisplayMode.RIGHT_BOTTOM || model.displayMode==InkSliderMdl.DisplayMode.BOTH_SIDES
 	private val reversed get() = model.reverse xor (orientation==InkSliderMdl.Orientation.HORIZONTAL)
 	private val colorRowSize get() = resources.getDimension(R.dimen.inkslider_row_height).toInt()
 	private val totalSize get() = model.colors.size*colorRowSize
@@ -147,19 +149,31 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private fun clearDisplays() {
 		when(orientation) {
 			InkSliderMdl.Orientation.VERTICAL -> {
-				linearLayoutDisplayLeft?.setMargins(top = 0)
-				linearLayoutDisplayRight?.setMargins(top = 0)
+				linearLayoutDisplayTopLeft?.setMargins(top = 0)
+				linearLayoutDisplayBottomRight?.setMargins(top = 0)
 				linearLayoutDisplayCenter?.setMargins(top = 0)
 			}
 			InkSliderMdl.Orientation.HORIZONTAL -> {
-				linearLayoutDisplayLeft?.setMargins(left = 0)
-				linearLayoutDisplayRight?.setMargins(left = 0)
+				linearLayoutDisplayTopLeft?.setMargins(left = 0)
+				linearLayoutDisplayBottomRight?.setMargins(left = 0)
 				linearLayoutDisplayCenter?.setMargins(left = 0)
 			}
 		}
-		linearLayoutDisplayLeft?.setVisible(visible = false, holdSpaceOnDissapear = true)
-		linearLayoutDisplayRight?.setVisible(visible = false, holdSpaceOnDissapear = true)
-		linearLayoutDisplayCenter?.setVisible(visible = false, holdSpaceOnDissapear = true)
+		linearLayoutDisplayTopLeft?.setVisible(visible = false, holdSpaceOnDissapear = visibleTopLeft)
+		linearLayoutDisplayBottomRight?.setVisible(visible = false, holdSpaceOnDissapear = visibleBottomRight)
+		linearLayoutDisplayCenter?.setVisible(visible = false, holdSpaceOnDissapear = false)
+		
+		val anyText = model.values.find { it.display.string!=null }!=null
+		val anyIcon = model.values.find { it.display.icon!=null }!=null
+		val anyTextAndIcon = model.values.find { it.display.string!=null && it.display.icon!=null }!=null
+		if(anyText || anyTextAndIcon) {
+			ivDisplayRight?.setVisible(visible = false, holdSpaceOnDissapear = false)
+			ivDisplayLeft?.setVisible(visible = false, holdSpaceOnDissapear = false)
+		}
+		if(anyIcon || anyTextAndIcon) {
+			tvDisplayRight?.setVisible(visible = false, holdSpaceOnDissapear = false)
+			tvDisplayLeft?.setVisible(visible = false, holdSpaceOnDissapear = false)
+		}
 	}
 	
 	/**
@@ -319,9 +333,9 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	
 	private fun updateDisplays() {
 		//Shows/hides displays depending on current DisplayMode
-		linearLayoutDisplayLeft?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.LEFT_TOP || model.displayMode==InkSliderMdl.DisplayMode.BOTH_SIDES, true)
-		linearLayoutDisplayRight?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.RIGHT_BOTTOM || model.displayMode==InkSliderMdl.DisplayMode.BOTH_SIDES, true)
-		linearLayoutDisplayCenter?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.CENTER, true)
+		linearLayoutDisplayTopLeft?.setVisible(visibleTopLeft, visibleTopLeft)
+		linearLayoutDisplayBottomRight?.setVisible(visibleBottomRight, visibleBottomRight)
+		linearLayoutDisplayCenter?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.CENTER, false)
 		
 		//Style display
 		model.currentItem.display.let { display ->
@@ -331,8 +345,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 					tvDisplayRight?.text = it
 					tvDisplayLeft?.text = it
 				}
-				tvDisplayRight?.setVisible(it!=null)
-				tvDisplayLeft?.setVisible(it!=null)
+				tvDisplayRight?.setVisible(it!=null, false)
+				tvDisplayLeft?.setVisible(it!=null, false)
 			}
 			//Set display text color
 			display.textColor?.let {
@@ -345,8 +359,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 					ivDisplayLeft?.setDrawableRes(it)
 					ivDisplayRight?.setDrawableRes(it)
 				}
-				ivDisplayLeft?.setVisible(it!=null)
-				ivDisplayRight?.setVisible(it!=null)
+				ivDisplayRight?.setVisible(it!=null, false)
+				ivDisplayLeft?.setVisible(it!=null, false)
 			}
 			//Set display icon color
 			display.iconTintColor?.let {
@@ -365,8 +379,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			InkSliderMdl.Orientation.HORIZONTAL -> {
 				currentPosition?.toInt()?.let {
 					if (it in 1 until (linearLayoutColors?.width ?: width)) {
-						linearLayoutDisplayLeft?.setMargins(left = it-((linearLayoutDisplayLeft?.width?:0)/2)+leftSpacing)
-						linearLayoutDisplayRight?.setMargins(left = it-((linearLayoutDisplayRight?.width?:0)/2)+leftSpacing)
+						linearLayoutDisplayTopLeft?.setMargins(left = it-((linearLayoutDisplayTopLeft?.width?:0)/2)+leftSpacing)
+						linearLayoutDisplayBottomRight?.setMargins(left = it-((linearLayoutDisplayBottomRight?.width?:0)/2)+leftSpacing)
 						linearLayoutDisplayCenter?.setMargins(left = it-((linearLayoutDisplayCenter?.width?:0)/2)+leftSpacing)
 					}
 				}
@@ -374,8 +388,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			InkSliderMdl.Orientation.VERTICAL -> {
 				currentPosition?.toInt()?.let {
 					if (it in 1 until (linearLayoutColors?.height ?: height)) {
-						linearLayoutDisplayLeft?.setMargins(top = it-((linearLayoutDisplayLeft?.height?:0)/2)+topSpacing)
-						linearLayoutDisplayRight?.setMargins(top = it-((linearLayoutDisplayRight?.height?:0)/2)+topSpacing)
+						linearLayoutDisplayTopLeft?.setMargins(top = it-((linearLayoutDisplayTopLeft?.height?:0)/2)+topSpacing)
+						linearLayoutDisplayBottomRight?.setMargins(top = it-((linearLayoutDisplayBottomRight?.height?:0)/2)+topSpacing)
 						linearLayoutDisplayCenter?.setMargins(top = it-((linearLayoutDisplayCenter?.height?:0)/2)+topSpacing)
 					}
 				}
