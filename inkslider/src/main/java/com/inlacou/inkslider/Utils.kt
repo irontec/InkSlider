@@ -126,7 +126,7 @@ internal fun View.setMargins(left: Int? = null, top: Int? = null, right: Int? = 
 	if (layoutParams is ViewGroup.MarginLayoutParams) {
 		val p = layoutParams as ViewGroup.MarginLayoutParams
 		Log.d("margins", "left: $left right: $right top: $top bottom $bottom")
-		p.setMargins(left ?: p.leftMargin, top ?: p.topMargin, left ?: p.rightMargin, bottom ?: p.bottomMargin)
+		p.setMargins(left ?: p.leftMargin, top ?: p.topMargin, right ?: p.rightMargin, bottom ?: p.bottomMargin)
 		layoutParams = p
 		requestLayout()
 	}

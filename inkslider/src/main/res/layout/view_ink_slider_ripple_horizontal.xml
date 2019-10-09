@@ -6,8 +6,8 @@
     android:id="@+id/view_base_layout_surface"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:gravity="center"
+    android:layout_gravity="center_horizontal"
+    android:gravity="center_horizontal"
     tools:background="#000"
     tools:layout_width="match_parent"
     tools:layout_height="match_parent">
@@ -17,6 +17,7 @@
         android:layout_width="@dimen/inkslider_button_width"
         android:layout_height="@dimen/inkslider_button_height"
         android:layout_toEndOf="@+id/linearLayout_colors"
+        android:layout_marginStart="@dimen/inkslider_button_bottom_margin_top_right"
         android:layout_centerVertical="true">
         <com.inlacou.pripple.RippleLinearLayout
             android:id="@+id/ripple_layout_top"
@@ -50,7 +51,7 @@
         android:id="@+id/minus"
         android:layout_width="@dimen/inkslider_button_width"
         android:layout_height="@dimen/inkslider_button_height"
-        android:layout_marginTop="@dimen/inkslider_button_bottom_margin_top"
+        android:layout_marginEnd="@dimen/inkslider_button_bottom_margin_bottom_left"
         android:layout_centerVertical="true">
         <com.inlacou.pripple.RippleLinearLayout
             android:id="@+id/ripple_layout_bottom"

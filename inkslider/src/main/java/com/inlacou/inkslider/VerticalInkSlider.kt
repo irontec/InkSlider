@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.*
+import androidx.core.view.size
 import com.inlacou.pripple.RippleLinearLayout
 import kotlin.math.roundToInt
 
@@ -64,12 +65,15 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		}
 	
 	/* Virtual variables for cleaner code */
-	private val realHeight get() = linearLayoutColors?.height ?: height
-	private val realWidth get() = linearLayoutColors?.width ?: width
+	
+	private val colorRowSize get() = resources.getDimension(R.dimen.inkslider_row_height).toInt()
+	private val realHeight get() = model.colors.size*colorRowSize
+	private val realWidth get() = model.colors.size*colorRowSize
 	private val stepSize get() = when(orientation) {
 		InkSliderMdl.Orientation.VERTICAL -> realHeight/(items.size)
 		InkSliderMdl.Orientation.HORIZONTAL -> realWidth/(items.size) }
 	private val topSpacing get() = linearLayoutColors?.getCoordinates()?.top ?: 0
+	private val leftSpacing get() = linearLayoutColors?.getCoordinates()?.left ?: 0
 	
 	init {
 		this.initialize()
@@ -89,6 +93,8 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	
 	protected fun populate() {
 		Log.d("populate", "values: ${items.size} | colors: ${model.colors.size}")
+		Log.d("populate", "values: $items")
+		Log.d("populate", "colors: ${model.colors}")
 		clearItems()
 		addItems()
 		clearDisplays()
@@ -108,6 +114,7 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			model.currentItem = items[volume]
 			forceUpdate()
 			model.onValueSet?.invoke(model.currentItem, fireListener)
+			Log.d("populate", "stepSize: $stepSize | realHeight: $realHeight")
 		}
 	}
 	
@@ -116,6 +123,7 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			model.currentItem = item
 			forceUpdate()
 			model.onValueSet?.invoke(model.currentItem, fireListener)
+			Log.d("populate", "stepSize: $stepSize | realHeight: $realHeight")
 		}
 	}
 	
@@ -181,8 +189,8 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			setBackgroundColor(colorResId)
 			layoutParams = (layoutParams).apply {
 				when(orientation) {
-					InkSliderMdl.Orientation.VERTICAL -> height = resources.getDimension(R.dimen.inkslider_row_height).toInt()
-					InkSliderMdl.Orientation.HORIZONTAL -> width = resources.getDimension(R.dimen.inkslider_row_height).toInt()
+					InkSliderMdl.Orientation.VERTICAL -> height = colorRowSize
+					InkSliderMdl.Orientation.HORIZONTAL -> width = colorRowSize
 				}
 			}
 		}
@@ -198,8 +206,8 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			background = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(colorResId, secondColorResId))
 			layoutParams = (layoutParams).apply {
 				when(orientation) {
-					InkSliderMdl.Orientation.VERTICAL -> height = resources.getDimension(R.dimen.inkslider_row_height).toInt()
-					InkSliderMdl.Orientation.HORIZONTAL -> width = resources.getDimension(R.dimen.inkslider_row_height).toInt()
+					InkSliderMdl.Orientation.VERTICAL -> height = colorRowSize
+					InkSliderMdl.Orientation.HORIZONTAL -> width = colorRowSize
 				}
 			}
 		}
@@ -300,6 +308,7 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		currentPosition = (stepSize*(currentItemPos)).toFloat()
 		updateDisplays()
 		controller.onValueSet(false)
+		Log.d("populate", "stepSize: $stepSize | realHeight: $realHeight | topSpacing: $topSpacing")
 	}
 	
 	private fun updateDisplays() {
@@ -349,9 +358,9 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			InkSliderMdl.Orientation.HORIZONTAL -> {
 				currentPosition?.toInt()?.let {
 					if (it in 1 until (linearLayoutColors?.width ?: width)) {
-						val value = it//-((linearLayoutDisplayLeft?.width?:0)/2)
-						linearLayoutDisplayLeft?.setPaddings(left = value)
-						linearLayoutDisplayRight?.setPaddings(left = value)
+						val value = it-((linearLayoutDisplayLeft?.width?:0)/2)+leftSpacing
+						linearLayoutDisplayLeft?.setMargins(left = value)
+						linearLayoutDisplayRight?.setMargins(left = value)
 					}
 				}
 			}
