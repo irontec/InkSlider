@@ -16,7 +16,8 @@
         android:layout_marginBottom="@dimen/inkslider_button_top_margin_bottom"
         android:layout_width="@dimen/inkslider_button_width"
         android:layout_height="@dimen/inkslider_button_height"
-        android:layout_centerHorizontal="true">
+        android:layout_toEndOf="@+id/linearLayout_colors"
+        android:layout_centerVertical="true">
         <com.inlacou.pripple.RippleLinearLayout
             android:id="@+id/ripple_layout_top"
             android:layout_width="match_parent"
@@ -38,18 +39,18 @@
     <LinearLayout
         android:id="@+id/linearLayout_colors"
         android:layout_width="wrap_content"
+        tools:layout_width="200dp"
         android:layout_height="@dimen/inkslider_row_width"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:layout_below="@id/plus"
         android:orientation="horizontal"/>
     <RelativeLayout
         android:id="@+id/minus"
         android:layout_marginTop="@dimen/inkslider_button_bottom_margin_top"
-        android:layout_below="@id/linearLayout_colors"
+        android:layout_toStartOf="@id/linearLayout_colors"
         android:layout_width="@dimen/inkslider_button_width"
-        android:layout_height="@dimen/inkslider_button_height"
-        android:layout_centerHorizontal="true">
+        android:layout_centerVertical="true"
+        android:layout_height="@dimen/inkslider_button_height">
         <com.inlacou.pripple.RippleLinearLayout
             android:id="@+id/ripple_layout_bottom"
             android:layout_width="match_parent"
@@ -72,30 +73,22 @@
         android:id="@+id/linearLayout_slider"
         android:layout_width="@dimen/inkslider_width"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/linearLayout_display_left"
-        android:layout_toRightOf="@+id/linearLayout_display_left"
+        android:layout_below="@+id/linearLayout_display_top_left"
         android:orientation="horizontal"/>
-    <View
-        android:id="@+id/anchor"
-        android:layout_width="@dimen/inkslider_row_width"
-        android:layout_height="0dp"
-        android:layout_toEndOf="@+id/linearLayout_display_left"
-        android:layout_toRightOf="@+id/linearLayout_display_left"/>
     <LinearLayout
-        android:id="@+id/linearLayout_display_right"
+        android:id="@+id/linearLayout_display_bottom_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="-10dp"
-        android:layout_marginLeft="-10dp"
-        android:layout_toEndOf="@+id/anchor"
-        android:layout_toRightOf="@+id/anchor"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginTop="40dp"
+        android:layout_below="@id/linearLayout_colors"
+        android:gravity="center"
+        android:orientation="vertical">
         <ImageView
             android:id="@+id/iv_display_right_arrow"
             android:layout_width="@dimen/inkslider_indicator_arrow_size"
             android:layout_height="@dimen/inkslider_indicator_arrow_size"
             android:tint="@color/inkslider_indicator_arrow_color"
+            android:rotation="90"
             android:src="@drawable/ic_indicator_right"/>
         <View
             android:layout_width="@dimen/inkslider_indicator_horizontal_separation"
@@ -115,13 +108,12 @@
             android:gravity="center_vertical"/>
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/linearLayout_display_left"
+        android:id="@+id/linearLayout_display_top_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="-10dp"
-        android:layout_marginRight="-10dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginBottom="40dp"
+        android:gravity="center"
+        android:orientation="vertical">
         <ImageView
             android:id="@+id/iv_display_left"
             android:layout_width="@dimen/inkslider_side_display_icon_width"
@@ -142,6 +134,7 @@
             android:id="@+id/iv_display_left_arrow"
             android:layout_width="@dimen/inkslider_indicator_arrow_size"
             android:layout_height="@dimen/inkslider_indicator_arrow_size"
+            android:rotation="90"
             android:tint="@color/inkslider_indicator_arrow_color"
             android:src="@drawable/ic_indicator_left"/>
     </LinearLayout>

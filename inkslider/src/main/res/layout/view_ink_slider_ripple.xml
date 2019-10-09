@@ -72,18 +72,18 @@
         android:id="@+id/linearLayout_slider"
         android:layout_width="@dimen/inkslider_width"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/linearLayout_display_left"
-        android:layout_toRightOf="@+id/linearLayout_display_left"
+        android:layout_toEndOf="@+id/linearLayout_display_top_left"
+        android:layout_toRightOf="@+id/linearLayout_display_top_left"
         android:orientation="vertical">
     </LinearLayout>
     <View
         android:id="@+id/anchor"
         android:layout_width="@dimen/inkslider_row_width"
         android:layout_height="0dp"
-        android:layout_toEndOf="@+id/linearLayout_display_left"
-        android:layout_toRightOf="@+id/linearLayout_display_left"/>
+        android:layout_toEndOf="@+id/linearLayout_display_top_left"
+        android:layout_toRightOf="@+id/linearLayout_display_top_left"/>
     <LinearLayout
-        android:id="@+id/linearLayout_display_right"
+        android:id="@+id/linearLayout_display_bottom_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="-10dp"
@@ -116,7 +116,7 @@
             android:gravity="center_vertical"/>
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/linearLayout_display_left"
+        android:id="@+id/linearLayout_display_top_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="-10dp"

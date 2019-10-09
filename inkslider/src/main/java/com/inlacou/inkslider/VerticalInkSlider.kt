@@ -17,8 +17,6 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	open val orientation = InkSliderMdl.Orientation.VERTICAL
 	
 	private var currentPosition: Float? = null
-	private var plus: View? = null
-	private var minus: View? = null
 	private var surfaceLayout: RelativeLayout? = null
 	private var linearLayoutColors: LinearLayout? = null
 	private var linearLayoutSliders: LinearLayout? = null
@@ -30,25 +28,23 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private var ivDisplayRight: ImageView? = null
 	private var ivDisplayLeftArrow: ImageView? = null
 	private var ivDisplayRightArrow: ImageView? = null
-	private var rippleLayoutTop: RippleLinearLayout? = null
-	private var rippleLayoutBottom: RippleLinearLayout? = null
+	private var rippleLayoutPlus: RippleLinearLayout? = null
+	private var rippleLayoutMinus: RippleLinearLayout? = null
 	
 	private fun bindViews() {
-		plus = findViewById(R.id.plus)
-		minus = findViewById(R.id.minus)
 		surfaceLayout = findViewById(R.id.view_base_layout_surface)
 		linearLayoutColors = findViewById(R.id.linearLayout_colors)
 		linearLayoutSliders = findViewById(R.id.linearLayout_slider)
-		linearLayoutDisplayLeft = findViewById(R.id.linearLayout_display_left)
-		linearLayoutDisplayRight = findViewById(R.id.linearLayout_display_right)
+		linearLayoutDisplayLeft = findViewById(R.id.linearLayout_display_top_left)
+		linearLayoutDisplayRight = findViewById(R.id.linearLayout_display_bottom_right)
 		tvDisplayLeft = findViewById(R.id.tv_display_left)
 		tvDisplayRight = findViewById(R.id.tv_display_right)
 		ivDisplayLeft = findViewById(R.id.iv_display_left)
 		ivDisplayRight = findViewById(R.id.iv_display_right)
 		ivDisplayLeftArrow = findViewById(R.id.iv_display_left_arrow)
 		ivDisplayRightArrow = findViewById(R.id.iv_display_right_arrow)
-		rippleLayoutTop = findViewById(R.id.ripple_layout_top)
-		rippleLayoutBottom = findViewById(R.id.ripple_layout_bottom)
+		rippleLayoutPlus = findViewById(R.id.ripple_layout_top)
+		rippleLayoutMinus = findViewById(R.id.ripple_layout_bottom)
 	}
 	
 	var model: InkSliderMdl = InkSliderMdl(colors = listOf(), values = listOf(InkSliderMdl.Item(value = "Any", display = InkSliderMdl.Display("Any"), selectable = true)))
@@ -143,9 +139,17 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	/**
 	 * Clears both displays resetting position and making them View.INVISIBLE
 	 */
-	private fun clearDisplays(){
-		linearLayoutDisplayLeft?.setMargins(top = 0)
-		linearLayoutDisplayRight?.setMargins(top = 0)
+	private fun clearDisplays() {
+		when(orientation) {
+			InkSliderMdl.Orientation.VERTICAL -> {
+				linearLayoutDisplayLeft?.setMargins(top = 0)
+				linearLayoutDisplayRight?.setMargins(top = 0)
+			}
+			InkSliderMdl.Orientation.HORIZONTAL -> {
+				linearLayoutDisplayLeft?.setMargins(left = 0)
+				linearLayoutDisplayRight?.setMargins(left = 0)
+			}
+		}
 		linearLayoutDisplayLeft?.setVisible(visible = false, holdSpaceOnDissapear = true)
 		linearLayoutDisplayRight?.setVisible(visible = false, holdSpaceOnDissapear = true)
 	}
@@ -212,8 +216,8 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	@SuppressLint("ClickableViewAccessibility")
 	private fun setListeners() {
 		//Touch listeners
-		rippleLayoutTop?.isClickable = true
-		rippleLayoutTop?.setOnTouchListener { view, motionEvent ->
+		rippleLayoutPlus?.isClickable = true
+		rippleLayoutPlus?.setOnTouchListener { view, motionEvent ->
 			when(motionEvent?.action){
 				android.view.MotionEvent.ACTION_DOWN -> {
 					//Start
@@ -223,7 +227,7 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 					longClickSpeed = longClickSpeedMax
 				}
 				android.view.MotionEvent.ACTION_MOVE -> {
-					rippleLayoutTop?.onTouchEvent(motionEvent)
+					rippleLayoutPlus?.onTouchEvent(motionEvent)
 					val now = System.currentTimeMillis()
 					if(now-longClickLastTrigger>longClickSpeed) {
 						longClickLastTrigger = now
@@ -235,8 +239,8 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			false
 		}
 		
-		rippleLayoutBottom?.isClickable = true
-		rippleLayoutBottom?.setOnTouchListener { view, motionEvent ->
+		rippleLayoutMinus?.isClickable = true
+		rippleLayoutMinus?.setOnTouchListener { view, motionEvent ->
 			when(motionEvent?.action){
 				android.view.MotionEvent.ACTION_DOWN -> {
 					//Start
@@ -347,7 +351,7 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			InkSliderMdl.Orientation.HORIZONTAL -> {
 				currentPosition?.toInt()?.let {
 					if (it in 1 until (linearLayoutColors?.width ?: width)) {
-						val value = it-((linearLayoutDisplayLeft?.width?:0)/2)
+						val value = it//-((linearLayoutDisplayLeft?.width?:0)/2)
 						linearLayoutDisplayLeft?.setPaddings(left = value)
 						linearLayoutDisplayRight?.setPaddings(left = value)
 					}
