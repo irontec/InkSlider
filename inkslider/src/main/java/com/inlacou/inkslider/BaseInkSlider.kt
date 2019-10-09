@@ -19,8 +19,9 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private var currentPosition: Float? = null
 	private var surfaceLayout: RelativeLayout? = null
 	private var linearLayoutColors: LinearLayout? = null
-	private var linearLayoutDisplayLeft: LinearLayout? = null
-	private var linearLayoutDisplayRight: LinearLayout? = null
+	private var linearLayoutDisplayLeft: View? = null
+	private var linearLayoutDisplayRight: View? = null
+	private var linearLayoutDisplayCenter: View? = null
 	private var tvDisplayLeft: TextView? = null
 	private var tvDisplayRight: TextView? = null
 	private var ivDisplayLeft: ImageView? = null
@@ -35,6 +36,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		linearLayoutColors = findViewById(R.id.linearLayout_colors)
 		linearLayoutDisplayLeft = findViewById(R.id.linearLayout_display_top_left)
 		linearLayoutDisplayRight = findViewById(R.id.linearLayout_display_bottom_right)
+		linearLayoutDisplayCenter = findViewById(R.id.linearLayout_display_center)
 		tvDisplayLeft = findViewById(R.id.tv_display_left)
 		tvDisplayRight = findViewById(R.id.tv_display_right)
 		ivDisplayLeft = findViewById(R.id.iv_display_left)
@@ -147,14 +149,17 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			InkSliderMdl.Orientation.VERTICAL -> {
 				linearLayoutDisplayLeft?.setMargins(top = 0)
 				linearLayoutDisplayRight?.setMargins(top = 0)
+				linearLayoutDisplayCenter?.setMargins(top = 0)
 			}
 			InkSliderMdl.Orientation.HORIZONTAL -> {
 				linearLayoutDisplayLeft?.setMargins(left = 0)
 				linearLayoutDisplayRight?.setMargins(left = 0)
+				linearLayoutDisplayCenter?.setMargins(left = 0)
 			}
 		}
 		linearLayoutDisplayLeft?.setVisible(visible = false, holdSpaceOnDissapear = true)
 		linearLayoutDisplayRight?.setVisible(visible = false, holdSpaceOnDissapear = true)
+		linearLayoutDisplayCenter?.setVisible(visible = false, holdSpaceOnDissapear = true)
 	}
 	
 	/**
@@ -314,8 +319,9 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	
 	private fun updateDisplays() {
 		//Shows/hides displays depending on current DisplayMode
-		linearLayoutDisplayLeft?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.LEFT_TOP || model.displayMode==InkSliderMdl.DisplayMode.BOTH, true)
-		linearLayoutDisplayRight?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.RIGHT_BOTTOM || model.displayMode==InkSliderMdl.DisplayMode.BOTH, true)
+		linearLayoutDisplayLeft?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.LEFT_TOP || model.displayMode==InkSliderMdl.DisplayMode.BOTH_SIDES, true)
+		linearLayoutDisplayRight?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.RIGHT_BOTTOM || model.displayMode==InkSliderMdl.DisplayMode.BOTH_SIDES, true)
+		linearLayoutDisplayCenter?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.CENTER, true)
 		
 		//Style display
 		model.currentItem.display.let { display ->
@@ -359,19 +365,18 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			InkSliderMdl.Orientation.HORIZONTAL -> {
 				currentPosition?.toInt()?.let {
 					if (it in 1 until (linearLayoutColors?.width ?: width)) {
-						val value = it-((linearLayoutDisplayLeft?.width?:0)/2)+leftSpacing
-						linearLayoutDisplayLeft?.setMargins(left = value)
-						linearLayoutDisplayRight?.setMargins(left = value)
+						linearLayoutDisplayLeft?.setMargins(left = it-((linearLayoutDisplayLeft?.width?:0)/2)+leftSpacing)
+						linearLayoutDisplayRight?.setMargins(left = it-((linearLayoutDisplayRight?.width?:0)/2)+leftSpacing)
+						linearLayoutDisplayCenter?.setMargins(left = it-((linearLayoutDisplayCenter?.width?:0)/2)+leftSpacing)
 					}
 				}
 			}
 			InkSliderMdl.Orientation.VERTICAL -> {
 				currentPosition?.toInt()?.let {
 					if (it in 1 until (linearLayoutColors?.height ?: height)) {
-						val value = it-((linearLayoutDisplayLeft?.height?:0)/2)+topSpacing
-						Log.d("currentPosition?", "$value")
-						linearLayoutDisplayLeft?.setMargins(top = value)
-						linearLayoutDisplayRight?.setMargins(top = value)
+						linearLayoutDisplayLeft?.setMargins(top = it-((linearLayoutDisplayLeft?.height?:0)/2)+topSpacing)
+						linearLayoutDisplayRight?.setMargins(top = it-((linearLayoutDisplayRight?.height?:0)/2)+topSpacing)
+						linearLayoutDisplayCenter?.setMargins(top = it-((linearLayoutDisplayCenter?.height?:0)/2)+topSpacing)
 					}
 				}
 			}

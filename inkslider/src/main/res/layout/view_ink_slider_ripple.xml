@@ -107,6 +107,12 @@
             android:layout_height="@dimen/inkslider_side_display_icon_height"
             android:gravity="center_vertical"/>
     </LinearLayout>
+    <ImageView
+        android:id="@+id/linearLayout_display_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_indicator_center"/>
     <LinearLayout
         android:id="@+id/linearLayout_display_top_left"
         android:layout_width="wrap_content"

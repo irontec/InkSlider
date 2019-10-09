@@ -16,7 +16,7 @@ data class InkSliderMdl(
 		/**
 		 * Which side to display marker
 		 */
-		val displayMode: DisplayMode = DisplayMode.BOTH,
+		val displayMode: DisplayMode = DisplayMode.CENTER,
 		/**
 		 * How to display colors
 		 */
@@ -39,7 +39,7 @@ data class InkSliderMdl(
 		 */
 		var enabled: Boolean = true
 ){
-	enum class DisplayMode { LEFT_TOP, RIGHT_BOTTOM, BOTH, NONE }
+	enum class DisplayMode { LEFT_TOP, RIGHT_BOTTOM, BOTH_SIDES, CENTER, NONE }
 	enum class ColorMode { NORMAL, GRADIENT }
 	enum class Orientation { VERTICAL, HORIZONTAL }
 	data class Item(val value: Any, val display: Display, val selectable: Boolean = true)
