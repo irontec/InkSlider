@@ -22,5 +22,6 @@
 	<dimen name="inkslider_button_bottom_corner_bottom_right">64dp</dimen>
 
 	<dimen name="inkslider_button_top_margin_bottom">16dp</dimen>
-	<dimen name="inkslider_button_bottom_margin_top">16dp</dimen>
+	<dimen name="inkslider_button_bottom_margin_top_right">16dp</dimen>
+	<dimen name="inkslider_button_bottom_margin_bottom_left">16dp</dimen>
 </resources>

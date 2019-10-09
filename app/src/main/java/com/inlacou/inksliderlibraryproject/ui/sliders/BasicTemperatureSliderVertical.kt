@@ -2,12 +2,13 @@ package com.inlacou.inksliderlibraryproject.ui.sliders
 
 import android.content.Context
 import android.util.AttributeSet
-import com.inlacou.inkslider.InkSlider
+import com.inlacou.inkslider.HorizontalInkSlider
+import com.inlacou.inkslider.VerticalInkSlider
 import com.inlacou.inkslider.InkSliderMdl
 import com.inlacou.inksliderlibraryproject.R
 
-class BasicTemperatureSlider @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-	: InkSlider(context, attrs, defStyleAttr){
+class BasicTemperatureSliderVertical @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+	: HorizontalInkSlider(context, attrs, defStyleAttr){
 	
 	var onValueSet: ((InkSliderMdl.Item, fromUser: Boolean) -> Unit)? = null
 	var onValueChange: ((InkSliderMdl.Item, fromUser: Boolean) -> Unit)? = null
@@ -23,6 +24,8 @@ class BasicTemperatureSlider @JvmOverloads constructor(context: Context, attrs: 
 		temperatures.add(0, InkSliderMdl.Item(value = 27, display = InkSliderMdl.Display(string = "27.0º", textColor = colors[0]), selectable = false))
 		model = InkSliderMdl(
 				colors = colors
+				, reverse = false
+				, displayMode = InkSliderMdl.DisplayMode.BOTH
 				, values = temperatures
 				, onValueSet = { item: InkSliderMdl.Item, b: Boolean ->
 			onValueSet?.invoke(item, b)

@@ -8,12 +8,11 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.inlacou.inkslider.InkSliderMdl
 import com.inlacou.inksliderlibraryproject.R
-import com.inlacou.inksliderlibraryproject.ui.sliders.BasicSoundSlider
-import com.inlacou.inksliderlibraryproject.ui.sliders.BasicTemperatureSlider
+import com.inlacou.inksliderlibraryproject.ui.sliders.BasicTemperatureSliderVertical
 
 class TemperatureFragment : Fragment() {
 	
-	private var tempSlider: BasicTemperatureSlider? = null
+	private var tempSlider: BasicTemperatureSliderVertical? = null
 	private var tvDisplay: TextView? = null
 	private var tvDisplayRealtime: TextView? = null
 	

@@ -6,6 +6,7 @@ import android.content.res.Resources
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -124,9 +125,16 @@ internal fun View?.setVisible(visible: Boolean, holdSpaceOnDissapear: Boolean = 
 internal fun View.setMargins(left: Int? = null, top: Int? = null, right: Int? = null, bottom: Int? = null) {
 	if (layoutParams is ViewGroup.MarginLayoutParams) {
 		val p = layoutParams as ViewGroup.MarginLayoutParams
+		Log.d("margins", "left: $left right: $right top: $top bottom $bottom")
 		p.setMargins(left ?: p.leftMargin, top ?: p.topMargin, right ?: p.rightMargin, bottom ?: p.bottomMargin)
+		layoutParams = p
 		requestLayout()
 	}
+}
+
+fun View.setPaddings(left: Int? = null, top: Int? = null, right: Int? = null, bottom: Int? = null) {
+	setPadding(left ?: paddingLeft, top ?: paddingTop, right ?: paddingRight, bottom ?: paddingBottom)
+	requestLayout()
 }
 
 internal fun ImageView.setDrawableRes(resId: Int){
