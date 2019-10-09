@@ -19,7 +19,6 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private var currentPosition: Float? = null
 	private var surfaceLayout: RelativeLayout? = null
 	private var linearLayoutColors: LinearLayout? = null
-	private var linearLayoutSliders: LinearLayout? = null
 	private var linearLayoutDisplayLeft: LinearLayout? = null
 	private var linearLayoutDisplayRight: LinearLayout? = null
 	private var tvDisplayLeft: TextView? = null
@@ -34,7 +33,6 @@ open class VerticalInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private fun bindViews() {
 		surfaceLayout = findViewById(R.id.view_base_layout_surface)
 		linearLayoutColors = findViewById(R.id.linearLayout_colors)
-		linearLayoutSliders = findViewById(R.id.linearLayout_slider)
 		linearLayoutDisplayLeft = findViewById(R.id.linearLayout_display_top_left)
 		linearLayoutDisplayRight = findViewById(R.id.linearLayout_display_bottom_right)
 		tvDisplayLeft = findViewById(R.id.tv_display_left)

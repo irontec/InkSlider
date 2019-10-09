@@ -68,14 +68,6 @@
             android:layout_centerInParent="true"
             android:src="@drawable/ic_minus"/>
     </RelativeLayout>
-    <LinearLayout
-        android:id="@+id/linearLayout_slider"
-        android:layout_width="@dimen/inkslider_width"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/linearLayout_display_top_left"
-        android:layout_toRightOf="@+id/linearLayout_display_top_left"
-        android:orientation="vertical">
-    </LinearLayout>
     <View
         android:id="@+id/anchor"
         android:layout_width="@dimen/inkslider_row_width"

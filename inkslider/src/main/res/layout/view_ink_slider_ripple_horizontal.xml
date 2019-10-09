@@ -43,14 +43,15 @@
         android:layout_height="@dimen/inkslider_row_width"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@+id/minus"
+        android:layout_toEndOf="@+id/minus"
         android:orientation="horizontal"/>
     <RelativeLayout
         android:id="@+id/minus"
-        android:layout_marginTop="@dimen/inkslider_button_bottom_margin_top"
-        android:layout_toStartOf="@id/linearLayout_colors"
         android:layout_width="@dimen/inkslider_button_width"
-        android:layout_centerVertical="true"
-        android:layout_height="@dimen/inkslider_button_height">
+        android:layout_height="@dimen/inkslider_button_height"
+        android:layout_marginTop="@dimen/inkslider_button_bottom_margin_top"
+        android:layout_centerVertical="true">
         <com.inlacou.pripple.RippleLinearLayout
             android:id="@+id/ripple_layout_bottom"
             android:layout_width="match_parent"
@@ -69,12 +70,6 @@
             android:layout_centerInParent="true"
             android:src="@drawable/ic_minus"/>
     </RelativeLayout>
-    <LinearLayout
-        android:id="@+id/linearLayout_slider"
-        android:layout_width="@dimen/inkslider_width"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout_display_top_left"
-        android:orientation="horizontal"/>
     <LinearLayout
         android:id="@+id/linearLayout_display_bottom_right"
         android:layout_width="wrap_content"
