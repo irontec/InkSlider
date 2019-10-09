@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.*
-import androidx.core.view.size
 import com.inlacou.pripple.RippleLinearLayout
 import kotlin.math.roundToInt
 
@@ -67,11 +66,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	/* Virtual variables for cleaner code */
 	
 	private val colorRowSize get() = resources.getDimension(R.dimen.inkslider_row_height).toInt()
-	private val realHeight get() = model.colors.size*colorRowSize
-	private val realWidth get() = model.colors.size*colorRowSize
-	private val stepSize get() = when(orientation) {
-		InkSliderMdl.Orientation.VERTICAL -> realHeight/(items.size)
-		InkSliderMdl.Orientation.HORIZONTAL -> realWidth/(items.size) }
+	private val totalSize get() = model.colors.size*colorRowSize
+	private val stepSize get() = totalSize/(items.size)
 	private val topSpacing get() = linearLayoutColors?.getCoordinates()?.top ?: 0
 	private val leftSpacing get() = linearLayoutColors?.getCoordinates()?.left ?: 0
 	
@@ -114,7 +110,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			model.currentItem = items[volume]
 			forceUpdate()
 			model.onValueSet?.invoke(model.currentItem, fireListener)
-			Log.d("populate", "stepSize: $stepSize | realHeight: $realHeight")
+			Log.d("populate", "stepSize: $stepSize | totalSize: $totalSize")
 		}
 	}
 	
@@ -123,7 +119,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			model.currentItem = item
 			forceUpdate()
 			model.onValueSet?.invoke(model.currentItem, fireListener)
-			Log.d("populate", "stepSize: $stepSize | realHeight: $realHeight")
+			Log.d("populate", "stepSize: $stepSize | totalSize: $totalSize")
 		}
 	}
 	
@@ -274,7 +270,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 				InkSliderMdl.Orientation.HORIZONTAL -> event.x
 			} //reaches 0 at top linearLayoutColors and goes on the minus realm if you keep going up
 			currentPosition = relativePosition
-			val roughStep = (relativePosition/stepSize)
+			val roughStep = if(model.reverse) (relativePosition/stepSize)-1 else (relativePosition/stepSize)
 			val step = (relativePosition/stepSize).roundToInt()
 			val newItem = when {
 				step<=0 -> items.getFirstSelectable()
@@ -305,10 +301,14 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	
 	internal fun forceUpdate() {
 		val currentItemPos = model.values.indexOf(model.currentItem)
-		currentPosition = (stepSize*(currentItemPos)).toFloat()
+		currentPosition = if(model.reverse) {
+			totalSize-(stepSize*currentItemPos)
+		}else{
+			stepSize*currentItemPos
+		}.toFloat()
 		updateDisplays()
 		controller.onValueSet(false)
-		Log.d("populate", "stepSize: $stepSize | realHeight: $realHeight | topSpacing: $topSpacing")
+		Log.d("populate", "stepSize: $stepSize | totalSize: $totalSize | topSpacing: $topSpacing")
 	}
 	
 	private fun updateDisplays() {
