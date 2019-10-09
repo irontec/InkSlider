@@ -8,11 +8,11 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.inlacou.inkslider.InkSliderMdl
 import com.inlacou.inksliderlibraryproject.R
-import com.inlacou.inksliderlibraryproject.ui.sliders.BasicSoundSliderVertical
+import com.inlacou.inksliderlibraryproject.ui.sliders.BasicSoundSliderBase
 
 class SoundFragment : Fragment() {
 	
-	private var soundSlider: BasicSoundSliderVertical? = null
+	private var soundSlider: BasicSoundSliderBase? = null
 	private var tvDisplay: TextView? = null
 	private var tvDisplayRealtime: TextView? = null
 	

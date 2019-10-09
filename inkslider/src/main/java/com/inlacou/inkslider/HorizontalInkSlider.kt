@@ -2,11 +2,10 @@ package com.inlacou.inkslider
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 
 open class HorizontalInkSlider @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-	: VerticalInkSlider(context, attrs, defStyleAttr) {
+	: BaseInkSlider(context, attrs, defStyleAttr) {
 	
 	override val orientation: InkSliderMdl.Orientation
 		get() = InkSliderMdl.Orientation.HORIZONTAL

@@ -35,7 +35,7 @@ Temperature slider class:
 ```kt
 import android.content.Context
 import android.util.AttributeSet
-import com.inlacou.inkslider.VerticalInkSlider
+import com.inlacou.inkslider.BaseInkSlider
 import com.inlacou.inkslider.InkSliderMdl
 import com.inlacou.inksliderlibraryproject.R
 
@@ -71,7 +71,7 @@ Sound slider class:
 ```kt
 import android.content.Context
 import android.util.AttributeSet
-import com.inlacou.inkslider.VerticalInkSlider
+import com.inlacou.inkslider.BaseInkSlider
 import com.inlacou.inkslider.InkSliderMdl
 import com.inlacou.inksliderlibraryproject.R
 
