@@ -192,7 +192,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 				var newHeight = colorRowWidth - (if (visibleTopLeft) negativeMargin else 0) - (if (visibleBottomRight) negativeMargin else 0)
 				if (colorRowWidth < buttonHeight) {
 					val correction = (buttonHeight - colorRowWidth) / 2
-					if(visibleBottomRight && !visibleTopLeft) newHeight += correction else newHeight -= correction
+					if(visibleBottomRight && !visibleTopLeft) newHeight += correction else if(!visibleBottomRight && visibleTopLeft) newHeight -= correction
 				}
 				Log.d("inlakou", "newHeigth: $newHeight")
 				it.layoutParams = it.layoutParams.apply { height = newHeight }
@@ -200,7 +200,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 				var newWidth = colorRowWidth - (if (visibleTopLeft) negativeMargin else 0) - (if (visibleBottomRight) negativeMargin else 0)
 				if (colorRowWidth < buttonWidth) {
 					val correction = (buttonWidth - colorRowWidth) / 2
-					if(visibleBottomRight && !visibleTopLeft) newWidth += correction else newWidth -= correction
+					if(visibleBottomRight && !visibleTopLeft) newWidth += correction else if(!visibleBottomRight && visibleTopLeft) newWidth -= correction
 				}
 				Log.d("inlakou", "newWidth: $newWidth")
 				it.layoutParams = it.layoutParams.apply { width = newWidth }
