@@ -20,7 +20,7 @@ data class InkSliderMdl(
 		/**
 		 * How to display colors
 		 */
-		val colorMode: ColorMode = ColorMode.GRADIENT,
+		val colorMode: ColorMode = ColorMode.GRADIENT_CONTINUOUS,
 		/**
 		 * Corners on color bar edges
 		 */
@@ -44,7 +44,7 @@ data class InkSliderMdl(
 		var enabled: Boolean = true
 ){
 	enum class DisplayMode { LEFT_TOP, RIGHT_BOTTOM, BOTH_SIDES, CENTER, NONE }
-	enum class ColorMode { NORMAL, GRADIENT }
+	enum class ColorMode { NORMAL, GRADIENT, GRADIENT_CONTINUOUS }
 	enum class Orientation { VERTICAL, HORIZONTAL }
 	data class Item(val value: Any, val display: Display, val selectable: Boolean = true)
 	data class Display(

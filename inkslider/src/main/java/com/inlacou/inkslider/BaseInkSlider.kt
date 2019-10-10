@@ -228,10 +228,10 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	 */
 	private fun addItems() {
 		val colors = if(reversed) model.colors.asReversed() else model.colors
-		if(model.colorMode==InkSliderMdl.ColorMode.GRADIENT) {
-			colors.forEachIndexed { index: Int, item: Int -> addIcon(if (index > 0) colors[index - 1] else item, item, index, colors.size) }
-		}else{
-			colors.forEachIndexed { index: Int, item: Int -> addIcon(item, index, colors.size) }
+		when {
+			model.colorMode==InkSliderMdl.ColorMode.GRADIENT -> colors.forEachIndexed { index: Int, item: Int -> addIcon(if (index > 0) colors[index - 1] else item, item, index, colors.size) }
+			model.colorMode==InkSliderMdl.ColorMode.NORMAL -> colors.forEachIndexed { index: Int, item: Int -> addIcon(item, index, colors.size) }
+			model.colorMode==InkSliderMdl.ColorMode.GRADIENT_CONTINUOUS -> addGradient(colors)
 		}
 	}
 	
@@ -283,6 +283,33 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 					when(orientation) {
 						VERTICAL -> { height = colorRowHeight; width = colorRowWidth }
 						HORIZONTAL -> { width = colorRowHeight; height = colorRowWidth }
+					}
+				}
+			}
+		}
+	}
+	
+	private fun addGradient(colors: List<Int>) {
+		linearLayoutColors?.let { linearLayout ->
+			when(orientation){
+				HORIZONTAL -> if(linearLayoutColors?.height!=colorRowWidth) { linearLayout.layoutParams = linearLayout.layoutParams.apply { height = colorRowWidth } }
+				VERTICAL -> if(linearLayoutColors?.width!=colorRowWidth) { linearLayout.layoutParams = linearLayout.layoutParams.apply { width = colorRowWidth } }
+			}
+			val view = View(context)
+			linearLayout.addView(view)
+			view.apply {
+				background = GradientDrawable(when(orientation) {
+					VERTICAL -> if(model.reverse) GradientDrawable.Orientation.BOTTOM_TOP else GradientDrawable.Orientation.TOP_BOTTOM
+					HORIZONTAL -> if(model.reverse) GradientDrawable.Orientation.RIGHT_LEFT else GradientDrawable.Orientation.LEFT_RIGHT
+				}, colors.toIntArray()).apply {
+					cornerRadii = floatArrayOf(
+							model.cornerRadius, model.cornerRadius, model.cornerRadius, model.cornerRadius,
+							model.cornerRadius, model.cornerRadius, model.cornerRadius, model.cornerRadius)
+				}
+				layoutParams = (layoutParams).apply {
+					when(orientation) {
+						VERTICAL -> { height = colorRowHeight*colors.size; width = colorRowWidth }
+						HORIZONTAL -> { width = colorRowHeight*colors.size; height = colorRowWidth }
 					}
 				}
 			}
