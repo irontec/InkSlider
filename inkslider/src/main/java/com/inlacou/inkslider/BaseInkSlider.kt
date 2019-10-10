@@ -178,10 +178,14 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		model.values.first().display.string?.let {
 			tvDisplayRight?.setVisible(visible = true)
 			tvDisplayLeft?.setVisible(visible = true)
+			tvDisplayRight?.text = it
+			tvDisplayLeft?.text = it
 		}
 		model.values.first().display.icon?.let {
 			ivDisplayRight?.setVisible(visible = true)
 			ivDisplayLeft?.setVisible(visible = true)
+			ivDisplayRight?.setDrawableRes(it)
+			ivDisplayLeft?.setDrawableRes(it)
 		}
 		
 		anchor?.let {
@@ -192,17 +196,21 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 				var newHeight = colorRowWidth - (if (visibleTopLeft) negativeMargin else 0) - (if (visibleBottomRight) negativeMargin else 0)
 				if (colorRowWidth < buttonHeight) {
 					val correction = (buttonHeight - colorRowWidth) / 2
-					if(visibleBottomRight && !visibleTopLeft) newHeight += correction else if(!visibleBottomRight && visibleTopLeft) newHeight -= correction
+					if(visibleBottomRight && !visibleTopLeft) newHeight += correction else if(!visibleBottomRight && visibleTopLeft) newHeight -= correction/2
+				}else{
+					val correction = (colorRowWidth - buttonHeight) / 2
+					if(!visibleBottomRight && visibleTopLeft) newHeight -= correction/2
 				}
-				Log.d("inlakou", "newHeigth: $newHeight")
 				it.layoutParams = it.layoutParams.apply { height = newHeight }
 			}else{
 				var newWidth = colorRowWidth - (if (visibleTopLeft) negativeMargin else 0) - (if (visibleBottomRight) negativeMargin else 0)
 				if (colorRowWidth < buttonWidth) {
 					val correction = (buttonWidth - colorRowWidth) / 2
-					if(visibleBottomRight && !visibleTopLeft) newWidth += correction else if(!visibleBottomRight && visibleTopLeft) newWidth -= correction
+					if(visibleBottomRight && !visibleTopLeft) newWidth += 0 else if(!visibleBottomRight && visibleTopLeft) newWidth -= correction/2
+				}else{
+					val correction = (colorRowWidth - buttonWidth) / 2
+					if(!visibleBottomRight && visibleTopLeft) newWidth -= correction/2
 				}
-				Log.d("inlakou", "newWidth: $newWidth")
 				it.layoutParams = it.layoutParams.apply { width = newWidth }
 			}
 		}
@@ -403,7 +411,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		}.toFloat()
 		updateDisplays()
 		controller.onValueSet(false)
-		Log.d("populate", "stepSize: $stepSize | totalSize: $totalSize | topSpacing: $topSpacing")
+		Log.d("populate", "stepSize: $stepSize | totalSize: $totalSize | topSpacing: $topSpacing | leftSpacing: $leftSpacing")
 	}
 	
 	private fun updateDisplays() {

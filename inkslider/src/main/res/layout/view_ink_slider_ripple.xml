@@ -42,14 +42,12 @@
         tools:layout_width="30dp"
         android:layout_height="wrap_content"
         tools:layout_height="200dp"
-        android:layout_centerHorizontal="true"
-        android:layout_toEndOf="@+id/minus"
         app:layout_constraintTop_toBottomOf="@id/plus"
-        app:layout_constraintStart_toStartOf="@+id/anchor"
-        app:layout_constraintEnd_toEndOf="@+id/anchor"
+        app:layout_constraintStart_toStartOf="@id/anchor"
+        app:layout_constraintEnd_toEndOf="@id/anchor"
         android:layout_marginTop="@dimen/inkslider_button_bottom_margin_bottom_left"
         android:orientation="vertical"/>
-    <Space
+    <View
         android:id="@+id/anchor"
         android:layout_width="1dp"
         android:layout_height="1dp"

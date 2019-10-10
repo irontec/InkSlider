@@ -25,7 +25,7 @@ class BasicTemperatureSlider @JvmOverloads constructor(context: Context, attrs: 
 		model = InkSliderMdl(
 				colors = colors
 				, values = temperatures
-				, displayMode = InkSliderMdl.DisplayMode.BOTH_SIDES
+				, displayMode = InkSliderMdl.DisplayMode.LEFT_TOP
 				, onValueSet = { item: InkSliderMdl.Item, b: Boolean ->
 			onValueSet?.invoke(item, b)
 		}, onValueChange = { item: InkSliderMdl.Item, b: Boolean ->
