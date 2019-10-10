@@ -4,10 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import com.inlacou.inkslider.HorizontalInkSlider
 import com.inlacou.inkslider.InkSliderMdl
+import com.inlacou.inkslider.VerticalInkSlider
 import com.inlacou.inksliderlibraryproject.R
 
 class BasicTemperatureSlider @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-	: HorizontalInkSlider(context, attrs, defStyleAttr){
+	: VerticalInkSlider(context, attrs, defStyleAttr){
 	
 	var onValueSet: ((InkSliderMdl.Item, fromUser: Boolean) -> Unit)? = null
 	var onValueChange: ((InkSliderMdl.Item, fromUser: Boolean) -> Unit)? = null

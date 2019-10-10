@@ -17,7 +17,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	
 	abstract val orientation: InkSliderMdl.Orientation
 	
-	private var verticalAnchor: View? = null
+	private var anchor: View? = null
 	private var currentPosition: Float? = null
 	private var linearLayoutColors: LinearLayout? = null
 	private var linearLayoutDisplayTopLeft: View? = null
@@ -33,7 +33,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private var rippleLayoutMinus: RippleLinearLayout? = null
 	
 	private fun bindViews() {
-		verticalAnchor = findViewById(R.id.vertical_anchor)
+		anchor = findViewById(R.id.anchor)
 		linearLayoutColors = findViewById(R.id.linearLayout_colors)
 		linearLayoutDisplayTopLeft = findViewById(R.id.linearLayout_display_top_left)
 		linearLayoutDisplayBottomRight = findViewById(R.id.linearLayout_display_bottom_right)
@@ -184,15 +184,27 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			ivDisplayLeft?.setVisible(visible = true)
 		}
 		
-		verticalAnchor?.let {
+		anchor?.let {
 			val negativeMargin = resources.getDimension(R.dimen.inkslider_indicator_negative_margin).toInt()
 			val buttonHeight = resources.getDimension(R.dimen.inkslider_button_height).toInt()
-			var newHeight = colorRowWidth - (if (visibleTopLeft) negativeMargin else 0) - (if (visibleBottomRight) negativeMargin else 0)
-			if (orientation == HORIZONTAL && colorRowWidth < buttonHeight) {
-				val correction = (buttonHeight - colorRowWidth) / 2
-				if(visibleBottomRight && !visibleTopLeft) newHeight += correction else newHeight -= correction
+			val buttonWidth = resources.getDimension(R.dimen.inkslider_button_width).toInt()
+			if(orientation == HORIZONTAL) {
+				var newHeight = colorRowWidth - (if (visibleTopLeft) negativeMargin else 0) - (if (visibleBottomRight) negativeMargin else 0)
+				if (colorRowWidth < buttonHeight) {
+					val correction = (buttonHeight - colorRowWidth) / 2
+					if(visibleBottomRight && !visibleTopLeft) newHeight += correction else newHeight -= correction
+				}
+				Log.d("inlakou", "newHeigth: $newHeight")
+				it.layoutParams = it.layoutParams.apply { height = newHeight }
+			}else{
+				var newWidth = colorRowWidth - (if (visibleTopLeft) negativeMargin else 0) - (if (visibleBottomRight) negativeMargin else 0)
+				if (colorRowWidth < buttonWidth) {
+					val correction = (buttonWidth - colorRowWidth) / 2
+					if(visibleBottomRight && !visibleTopLeft) newWidth += correction else newWidth -= correction
+				}
+				Log.d("inlakou", "newWidth: $newWidth")
+				it.layoutParams = it.layoutParams.apply { width = newWidth }
 			}
-			it.layoutParams = it.layoutParams.apply { height = newHeight }
 		}
 	}
 	
