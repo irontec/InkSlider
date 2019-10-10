@@ -20,7 +20,11 @@ data class InkSliderMdl(
 		/**
 		 * How to display colors
 		 */
-		val colorMode: ColorMode = ColorMode.NORMAL,
+		val colorMode: ColorMode = ColorMode.GRADIENT,
+		/**
+		 * Corners on color bar edges
+		 */
+		val cornerRadius: Float = 100f,
 		val reverse: Boolean = false,
 		/**
 		 * Called on value change (once, on button click or on press release)

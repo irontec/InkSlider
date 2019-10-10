@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.*
+import com.inlacou.inkslider.InkSliderMdl.Orientation.*
 import com.inlacou.pripple.RippleLinearLayout
 import kotlin.math.roundToInt
 
@@ -69,8 +70,9 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	
 	private val visibleTopLeft get() = model.displayMode==InkSliderMdl.DisplayMode.LEFT_TOP || model.displayMode==InkSliderMdl.DisplayMode.BOTH_SIDES
 	private val visibleBottomRight get() = model.displayMode==InkSliderMdl.DisplayMode.RIGHT_BOTTOM || model.displayMode==InkSliderMdl.DisplayMode.BOTH_SIDES
-	private val reversed get() = model.reverse xor (orientation==InkSliderMdl.Orientation.HORIZONTAL)
-	private val colorRowSize get() = resources.getDimension(R.dimen.inkslider_row_height).toInt()
+	private val reversed get() = model.reverse xor (orientation== HORIZONTAL)
+	private val colorRowSize get() = resources.getDimension(R.dimen.inkslider_row_vertical_height_horizontal_width).toInt()
+	private val colorRowSize2 get() = resources.getDimension(R.dimen.inkslider_row_vertical_width_horizontal_height).toInt()
 	private val totalSize get() = model.colors.size*colorRowSize
 	private val stepSize get() = totalSize/(items.size)
 	private val topSpacing get() = linearLayoutColors?.getCoordinates()?.top ?: 0
@@ -148,12 +150,12 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	 */
 	private fun clearDisplays() {
 		when(orientation) {
-			InkSliderMdl.Orientation.VERTICAL -> {
+			VERTICAL -> {
 				linearLayoutDisplayTopLeft?.setMargins(top = 0)
 				linearLayoutDisplayBottomRight?.setMargins(top = 0)
 				linearLayoutDisplayCenter?.setMargins(top = 0)
 			}
-			InkSliderMdl.Orientation.HORIZONTAL -> {
+			HORIZONTAL -> {
 				linearLayoutDisplayTopLeft?.setMargins(left = 0)
 				linearLayoutDisplayBottomRight?.setMargins(left = 0)
 				linearLayoutDisplayCenter?.setMargins(left = 0)
@@ -189,24 +191,33 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private fun addItems() {
 		val colors = if(reversed) model.colors.asReversed() else model.colors
 		if(model.colorMode==InkSliderMdl.ColorMode.GRADIENT) {
-			colors.forEachIndexed { index: Int, item: Int -> addIcon(if (index > 0) colors[index - 1] else item, item) }
+			colors.forEachIndexed { index: Int, item: Int -> addIcon(if (index > 0) colors[index - 1] else item, item, index, colors.size) }
 		}else{
-			colors.forEach { addIcon(it) }
+			colors.forEachIndexed { index: Int, item: Int -> addIcon(item, index, colors.size) }
 		}
 	}
 	
 	/**
 	 * Adds an icon to the linearLayout with provided {@param colorResId} background color
 	 */
-	private fun addIcon(colorResId: Int) {
-		val view = View(context)
-		linearLayoutColors?.addView(view)
-		view.apply {
-			setBackgroundColor(colorResId)
-			layoutParams = (layoutParams).apply {
-				when(orientation) {
-					InkSliderMdl.Orientation.VERTICAL -> height = colorRowSize
-					InkSliderMdl.Orientation.HORIZONTAL -> width = colorRowSize
+	private fun addIcon(colorResId: Int, index: Int, maxItems: Int) {
+		linearLayoutColors?.let { linearLayout ->
+			when(orientation){
+				HORIZONTAL -> if(linearLayoutColors?.height!=colorRowSize2) { linearLayout.layoutParams = linearLayout.layoutParams.apply { height = colorRowSize2 } }
+				VERTICAL -> if(linearLayoutColors?.width!=colorRowSize2) { linearLayout.layoutParams = linearLayout.layoutParams.apply { width = colorRowSize2 } }
+			}
+			val view = View(context)
+			linearLayout.addView(view)
+			view.apply {
+				background = GradientDrawable().apply {
+					setColor(colorResId)
+					cornerRadii = getCorners(index, maxItems)
+				}
+				layoutParams = layoutParams.apply {
+					when(orientation) {
+						HORIZONTAL -> { width = colorRowSize; height = colorRowSize2 }
+						VERTICAL -> { height = colorRowSize; width = colorRowSize2 }
+					}
 				}
 			}
 		}
@@ -215,16 +226,50 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	/**
 	 * Adds an icon to the linearLayout with provided {@param colorResId} background color
 	 */
-	private fun addIcon(colorResId: Int, secondColorResId: Int) {
-		val view = View(context)
-		linearLayoutColors?.addView(view)
-		view.apply {
-			background = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(colorResId, secondColorResId))
-			layoutParams = (layoutParams).apply {
-				when(orientation) {
-					InkSliderMdl.Orientation.VERTICAL -> height = colorRowSize
-					InkSliderMdl.Orientation.HORIZONTAL -> width = colorRowSize
+	private fun addIcon(colorResId: Int, secondColorResId: Int, index: Int, maxItems: Int) {
+		linearLayoutColors?.let { linearLayout ->
+			when(orientation){
+				HORIZONTAL -> if(linearLayoutColors?.height!=colorRowSize2) { linearLayout.layoutParams = linearLayout.layoutParams.apply { height = colorRowSize2 } }
+				VERTICAL -> if(linearLayoutColors?.width!=colorRowSize2) { linearLayout.layoutParams = linearLayout.layoutParams.apply { width = colorRowSize2 } }
+			}
+			val view = View(context)
+			linearLayout.addView(view)
+			view.apply {
+				background = GradientDrawable(when(orientation) {
+					VERTICAL -> if(model.reverse) GradientDrawable.Orientation.BOTTOM_TOP else GradientDrawable.Orientation.TOP_BOTTOM
+					HORIZONTAL -> if(model.reverse) GradientDrawable.Orientation.RIGHT_LEFT else GradientDrawable.Orientation.LEFT_RIGHT
+				}, intArrayOf(colorResId, secondColorResId)).apply {
+					cornerRadii = getCorners(index, maxItems)
 				}
+				layoutParams = (layoutParams).apply {
+					when(orientation) {
+						VERTICAL -> { height = colorRowSize; width = colorRowSize2 }
+						HORIZONTAL -> { width = colorRowSize; height = colorRowSize2 }
+					}
+				}
+			}
+		}
+	}
+	
+	private fun getCorners(index: Int, maxItems: Int): FloatArray {
+		return when(orientation){
+			VERTICAL -> when (index) {
+				0 -> floatArrayOf(
+						model.cornerRadius, model.cornerRadius, model.cornerRadius, model.cornerRadius,
+						0f, 0f, 0f, 0f)
+				maxItems-1 -> floatArrayOf(
+						0f, 0f, 0f, 0f,
+						model.cornerRadius, model.cornerRadius, model.cornerRadius, model.cornerRadius)
+				else -> floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+			}
+			HORIZONTAL -> when (index) {
+				0 -> floatArrayOf(
+						model.cornerRadius, model.cornerRadius, 0f, 0f,
+						0f, 0f, model.cornerRadius, model.cornerRadius)
+				maxItems-1 -> floatArrayOf(
+						0f, 0f, model.cornerRadius, model.cornerRadius,
+						model.cornerRadius, model.cornerRadius, 0f, 0f)
+				else -> floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
 			}
 		}
 	}
@@ -286,8 +331,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		//Touch listener
 		linearLayoutColors?.setOnTouchListener { _, event ->
 			val relativePosition = when(orientation){
-				InkSliderMdl.Orientation.VERTICAL -> event.y
-				InkSliderMdl.Orientation.HORIZONTAL -> event.x
+				VERTICAL -> event.y
+				HORIZONTAL -> event.x
 			} //reaches 0 at top linearLayoutColors and goes on the minus realm if you keep going up
 			currentPosition = relativePosition
 			val roughStep = if(reversed) (relativePosition/stepSize)-1 else (relativePosition/stepSize)
@@ -376,7 +421,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		
 		//Set display position
 		when(orientation){
-			InkSliderMdl.Orientation.HORIZONTAL -> {
+			HORIZONTAL -> {
 				currentPosition?.toInt()?.let {
 					if (it in 1 until (linearLayoutColors?.width ?: width)) {
 						linearLayoutDisplayTopLeft?.setMargins(left = it-((linearLayoutDisplayTopLeft?.width?:0)/2)+leftSpacing)
@@ -385,7 +430,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 					}
 				}
 			}
-			InkSliderMdl.Orientation.VERTICAL -> {
+			VERTICAL -> {
 				currentPosition?.toInt()?.let {
 					if (it in 1 until (linearLayoutColors?.height ?: height)) {
 						linearLayoutDisplayTopLeft?.setMargins(top = it-((linearLayoutDisplayTopLeft?.height?:0)/2)+topSpacing)
