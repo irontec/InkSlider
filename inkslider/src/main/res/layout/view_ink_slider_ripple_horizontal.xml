@@ -120,6 +120,13 @@
         app:layout_constraintTop_toTopOf="@id/linearLayout_colors"
         app:layout_constraintBottom_toBottomOf="@id/linearLayout_colors"
         android:src="@drawable/ic_indicator_center"/>
+    <View
+        android:id="@+id/linearLayout_display_center_special"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/linearLayout_colors"
+        app:layout_constraintBottom_toBottomOf="@id/linearLayout_colors"/>
     <LinearLayout
         android:id="@+id/linearLayout_display_bottom_right"
         android:layout_width="wrap_content"

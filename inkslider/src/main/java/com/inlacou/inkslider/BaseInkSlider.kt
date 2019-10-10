@@ -2,6 +2,7 @@ package com.inlacou.inkslider
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.util.Log
@@ -31,6 +32,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private var ivDisplayRightArrow: ImageView? = null
 	private var rippleLayoutPlus: RippleLinearLayout? = null
 	private var rippleLayoutMinus: RippleLinearLayout? = null
+	private var linearLayoutDisplayCenterSpecial: View? = null
 	
 	private fun bindViews() {
 		anchor = findViewById(R.id.anchor)
@@ -46,6 +48,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		ivDisplayRightArrow = findViewById(R.id.iv_display_right_arrow)
 		rippleLayoutPlus = findViewById(R.id.ripple_layout_top)
 		rippleLayoutMinus = findViewById(R.id.ripple_layout_bottom)
+		linearLayoutDisplayCenterSpecial = findViewById(R.id.linearLayout_display_center_special)
 	}
 	
 	var model: InkSliderMdl = InkSliderMdl(colors = listOf(), values = listOf(InkSliderMdl.Item(value = "Any", display = InkSliderMdl.Display("Any"), selectable = true)))
@@ -79,6 +82,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	 * Vertical width, horizontal height
 	 */
 	private val colorRowWidth get() = resources.getDimension(R.dimen.inkslider_row_vertical_width_horizontal_height).toInt()
+	private val indicatorCenterSpecialSize get() = resources.getDimension(R.dimen.inkslider_indicator_center_special_size).toInt()
+	private val indicatorCenterSpecialStrokeWidth get() = resources.getDimension(R.dimen.inkslider_indicator_center_special_stroke_width).toInt()
 	private val totalSize get() = model.colors.size*colorRowHeight
 	private val stepSize get() = totalSize/(items.size)
 	private val topSpacing get() = linearLayoutColors?.getCoordinates()?.top ?: 0
@@ -438,7 +443,6 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		}.toFloat()
 		updateDisplays()
 		controller.onValueSet(false)
-		Log.d("populate", "stepSize: $stepSize | totalSize: $totalSize | topSpacing: $topSpacing | leftSpacing: $leftSpacing")
 	}
 	
 	private fun updateDisplays() {
@@ -446,6 +450,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		linearLayoutDisplayTopLeft?.setVisible(visibleTopLeft, false)
 		linearLayoutDisplayBottomRight?.setVisible(visibleBottomRight, false)
 		linearLayoutDisplayCenter?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.CENTER, false)
+		linearLayoutDisplayCenterSpecial?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.CENTER_SPECIAL, false)
 		
 		//Style display
 		model.currentItem.display.let { display ->
@@ -482,6 +487,20 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 				ivDisplayLeftArrow?.tint(it)
 				ivDisplayRightArrow?.tint(it)
 			}
+			display.textColor?.let {
+				linearLayoutDisplayCenterSpecial?.let { view ->
+					view.layoutParams = view.layoutParams?.apply {
+						Log.d("inlakou", "size: $indicatorCenterSpecialSize")
+						width = indicatorCenterSpecialSize
+						height = indicatorCenterSpecialSize
+					}
+					view.background = GradientDrawable().apply {
+						cornerRadius = 300f
+						setStroke(indicatorCenterSpecialStrokeWidth, Color.WHITE)
+						setColor(it)
+					}
+				}
+			}
 		}
 		
 		//Set display position
@@ -492,6 +511,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 						linearLayoutDisplayTopLeft?.setMargins(left = it-((linearLayoutDisplayTopLeft?.width?:0)/2)+leftSpacing)
 						linearLayoutDisplayBottomRight?.setMargins(left = it-((linearLayoutDisplayBottomRight?.width?:0)/2)+leftSpacing)
 						linearLayoutDisplayCenter?.setMargins(left = it-((linearLayoutDisplayCenter?.width?:0)/2)+leftSpacing)
+						linearLayoutDisplayCenterSpecial?.setMargins(left = it-((linearLayoutDisplayCenterSpecial?.width?:0)/2)+leftSpacing)
 					}
 				}
 			}
@@ -501,6 +521,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 						linearLayoutDisplayTopLeft?.setMargins(top = it-((linearLayoutDisplayTopLeft?.height?:0)/2)+topSpacing)
 						linearLayoutDisplayBottomRight?.setMargins(top = it-((linearLayoutDisplayBottomRight?.height?:0)/2)+topSpacing)
 						linearLayoutDisplayCenter?.setMargins(top = it-((linearLayoutDisplayCenter?.height?:0)/2)+topSpacing)
+						linearLayoutDisplayCenterSpecial?.setMargins(top = it-((linearLayoutDisplayCenterSpecial?.height?:0)/2)+topSpacing)
 					}
 				}
 			}

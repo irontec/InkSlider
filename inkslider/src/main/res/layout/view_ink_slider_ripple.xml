@@ -119,6 +119,14 @@
         app:layout_constraintTop_toTopOf="parent"
         android:gravity="center_vertical"
         android:src="@drawable/ic_indicator_center"/>
+    <View
+        android:id="@+id/linearLayout_display_center_special"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:gravity="center_vertical"
+        app:layout_constraintStart_toStartOf="@id/linearLayout_colors"
+        app:layout_constraintEnd_toEndOf="@id/linearLayout_colors"
+        app:layout_constraintTop_toTopOf="parent"/>
     <LinearLayout
         android:id="@+id/linearLayout_display_bottom_right"
         android:layout_width="wrap_content"
