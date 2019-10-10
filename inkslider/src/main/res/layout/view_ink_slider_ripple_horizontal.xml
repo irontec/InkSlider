@@ -63,8 +63,8 @@
         android:layout_marginStart="@dimen/inkslider_button_bottom_margin_top_right">
         <com.inlacou.pripple.RippleLinearLayout
             android:id="@+id/ripple_layout_top"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/inkslider_button_width"
+            android:layout_height="@dimen/inkslider_button_height"
             app:normal="@color/inkslider_plus_minus_button_color"
             app:ripple="@color/inkslider_plus_minus_button_color_ripple"
             app:cornerBottomRight="@dimen/inkslider_button_top_corner_bottom_right"
@@ -122,8 +122,8 @@
         android:src="@drawable/ic_indicator_center"/>
     <View
         android:id="@+id/linearLayout_display_center_special"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/inkslider_indicator_center_special_size"
+        android:layout_height="@dimen/inkslider_indicator_center_special_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/linearLayout_colors"
         app:layout_constraintBottom_toBottomOf="@id/linearLayout_colors"/>

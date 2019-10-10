@@ -59,7 +59,7 @@
         android:layout_height="@dimen/inkslider_button_height"
         app:layout_constraintStart_toStartOf="@id/anchor"
         app:layout_constraintEnd_toEndOf="@id/anchor"
-        app:layout_constraintBottom_toBottomOf="@id/linearLayout_colors"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout_colors"
         android:layout_marginTop="@dimen/inkslider_button_bottom_margin_top_right">
         <com.inlacou.pripple.RippleLinearLayout
             android:id="@+id/ripple_layout_bottom"

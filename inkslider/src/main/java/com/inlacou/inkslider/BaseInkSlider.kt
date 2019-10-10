@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.*
@@ -83,6 +84,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	 */
 	private val colorRowWidth get() = resources.getDimension(R.dimen.inkslider_row_vertical_width_horizontal_height).toInt()
 	private val indicatorCenterSpecialSize get() = resources.getDimension(R.dimen.inkslider_indicator_center_special_size).toInt()
+	private val indicatorCenterSpecialSizeSelected get() = resources.getDimension(R.dimen.inkslider_indicator_center_special_size_selected).toInt()
 	private val indicatorCenterSpecialStrokeWidth get() = resources.getDimension(R.dimen.inkslider_indicator_center_special_stroke_width).toInt()
 	private val totalSize get() = model.colors.size*colorRowHeight
 	private val stepSize get() = totalSize/(items.size)
@@ -106,9 +108,6 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	}
 	
 	protected fun populate() {
-		Log.d("populate", "values: ${items.size} | colors: ${model.colors.size}")
-		Log.d("populate", "values: $items")
-		Log.d("populate", "colors: ${model.colors}")
 		clearItems()
 		addItems()
 		clearDisplays()
@@ -128,7 +127,6 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			model.currentItem = items[volume]
 			forceUpdate()
 			model.onValueSet?.invoke(model.currentItem, fireListener)
-			Log.d("populate", "stepSize: $stepSize | totalSize: $totalSize")
 		}
 	}
 	
@@ -137,7 +135,6 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			model.currentItem = item
 			forceUpdate()
 			model.onValueSet?.invoke(model.currentItem, fireListener)
-			Log.d("populate", "stepSize: $stepSize | totalSize: $totalSize")
 		}
 	}
 	
@@ -416,19 +413,19 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 				controller.onCurrentItemChanged(newItem, true)
 			}
 			model.currentItem = newItem
-			updateDisplays()
+			updateDisplays(event.action==MotionEvent.ACTION_MOVE || event.action==MotionEvent.ACTION_DOWN)
 			
 			when(event.action){
-				android.view.MotionEvent.ACTION_DOWN -> {
+				MotionEvent.ACTION_DOWN -> {
 					attemptClaimDrag()
 					true
 				}
-				android.view.MotionEvent.ACTION_CANCEL -> false
-				android.view.MotionEvent.ACTION_UP -> {
+				MotionEvent.ACTION_CANCEL -> false
+				MotionEvent.ACTION_UP -> {
 					if(model.hardSteps) forceUpdate() else controller.onTouchRelease()
 					false
 				}
-				android.view.MotionEvent.ACTION_MOVE -> true
+				MotionEvent.ACTION_MOVE -> true
 				else -> false
 			}
 		}
@@ -445,7 +442,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		controller.onValueSet(false)
 	}
 	
-	private fun updateDisplays() {
+	private fun updateDisplays(touching: Boolean = false) {
 		//Shows/hides displays depending on current DisplayMode
 		linearLayoutDisplayTopLeft?.setVisible(visibleTopLeft, false)
 		linearLayoutDisplayBottomRight?.setVisible(visibleBottomRight, false)
@@ -490,9 +487,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			display.textColor?.let {
 				linearLayoutDisplayCenterSpecial?.let { view ->
 					view.layoutParams = view.layoutParams?.apply {
-						Log.d("inlakou", "size: $indicatorCenterSpecialSize")
-						width = indicatorCenterSpecialSize
-						height = indicatorCenterSpecialSize
+						width = if(touching) indicatorCenterSpecialSizeSelected else indicatorCenterSpecialSize
+						height = if(touching) indicatorCenterSpecialSizeSelected else indicatorCenterSpecialSize
 					}
 					view.background = GradientDrawable().apply {
 						cornerRadius = 300f

@@ -43,7 +43,32 @@ data class InkSliderMdl(
 		 */
 		var enabled: Boolean = true
 ){
-	enum class DisplayMode { LEFT_TOP, RIGHT_BOTTOM, BOTH_SIDES, CENTER, CENTER_SPECIAL, NONE }
+	enum class DisplayMode {
+		/**
+		 * Text or icon
+		 */
+		LEFT_TOP,
+		/**
+		 * Text or icon
+		 */
+		RIGHT_BOTTOM,
+		/**
+		 * LEFT_TOP and RIGHT_BOTTOM
+		 */
+		BOTH_SIDES,
+		/**
+		 * Icon (not from values)
+		 */
+		CENTER,
+		/**
+		 * Needs display text color
+		 */
+		CENTER_SPECIAL,
+		/**
+		 * No display
+		 */
+		NONE }
+	
 	enum class ColorMode { NORMAL, GRADIENT, GRADIENT_CONTINUOUS }
 	enum class Orientation { VERTICAL, HORIZONTAL }
 	data class Item(val value: Any, val display: Display, val selectable: Boolean = true)
