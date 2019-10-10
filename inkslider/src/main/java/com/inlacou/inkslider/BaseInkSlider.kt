@@ -17,8 +17,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	
 	abstract val orientation: InkSliderMdl.Orientation
 	
+	private var verticalAnchor: View? = null
 	private var currentPosition: Float? = null
-	private var surfaceLayout: RelativeLayout? = null
 	private var linearLayoutColors: LinearLayout? = null
 	private var linearLayoutDisplayTopLeft: View? = null
 	private var linearLayoutDisplayBottomRight: View? = null
@@ -33,7 +33,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private var rippleLayoutMinus: RippleLinearLayout? = null
 	
 	private fun bindViews() {
-		surfaceLayout = findViewById(R.id.view_base_layout_surface)
+		verticalAnchor = findViewById(R.id.vertical_anchor)
 		linearLayoutColors = findViewById(R.id.linearLayout_colors)
 		linearLayoutDisplayTopLeft = findViewById(R.id.linearLayout_display_top_left)
 		linearLayoutDisplayBottomRight = findViewById(R.id.linearLayout_display_bottom_right)
@@ -71,9 +71,15 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private val visibleTopLeft get() = model.displayMode==InkSliderMdl.DisplayMode.LEFT_TOP || model.displayMode==InkSliderMdl.DisplayMode.BOTH_SIDES
 	private val visibleBottomRight get() = model.displayMode==InkSliderMdl.DisplayMode.RIGHT_BOTTOM || model.displayMode==InkSliderMdl.DisplayMode.BOTH_SIDES
 	private val reversed get() = model.reverse xor (orientation== HORIZONTAL)
-	private val colorRowSize get() = resources.getDimension(R.dimen.inkslider_row_vertical_height_horizontal_width).toInt()
-	private val colorRowSize2 get() = resources.getDimension(R.dimen.inkslider_row_vertical_width_horizontal_height).toInt()
-	private val totalSize get() = model.colors.size*colorRowSize
+	/**
+	 * Vertical height, horizontal width
+	 */
+	private val colorRowHeight get() = resources.getDimension(R.dimen.inkslider_row_vertical_height_horizontal_width).toInt()
+	/**
+	 * Vertical width, horizontal height
+	 */
+	private val colorRowWidth get() = resources.getDimension(R.dimen.inkslider_row_vertical_width_horizontal_height).toInt()
+	private val totalSize get() = model.colors.size*colorRowHeight
 	private val stepSize get() = totalSize/(items.size)
 	private val topSpacing get() = linearLayoutColors?.getCoordinates()?.top ?: 0
 	private val leftSpacing get() = linearLayoutColors?.getCoordinates()?.left ?: 0
@@ -165,16 +171,28 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		linearLayoutDisplayBottomRight?.setVisible(visible = false, holdSpaceOnDissapear = visibleBottomRight)
 		linearLayoutDisplayCenter?.setVisible(visible = false, holdSpaceOnDissapear = false)
 		
-		val anyText = model.values.find { it.display.string!=null }!=null
-		val anyIcon = model.values.find { it.display.icon!=null }!=null
-		val anyTextAndIcon = model.values.find { it.display.string!=null && it.display.icon!=null }!=null
-		if(anyText || anyTextAndIcon) {
-			ivDisplayRight?.setVisible(visible = false, holdSpaceOnDissapear = false)
-			ivDisplayLeft?.setVisible(visible = false, holdSpaceOnDissapear = false)
+		ivDisplayRight?.setVisible(visible = false, holdSpaceOnDissapear = false)
+		ivDisplayLeft?.setVisible(visible = false, holdSpaceOnDissapear = false)
+		tvDisplayRight?.setVisible(visible = false, holdSpaceOnDissapear = false)
+		tvDisplayLeft?.setVisible(visible = false, holdSpaceOnDissapear = false)
+		model.values.first().display.string?.let {
+			tvDisplayRight?.setVisible(visible = true)
+			tvDisplayLeft?.setVisible(visible = true)
 		}
-		if(anyIcon || anyTextAndIcon) {
-			tvDisplayRight?.setVisible(visible = false, holdSpaceOnDissapear = false)
-			tvDisplayLeft?.setVisible(visible = false, holdSpaceOnDissapear = false)
+		model.values.first().display.icon?.let {
+			ivDisplayRight?.setVisible(visible = true)
+			ivDisplayLeft?.setVisible(visible = true)
+		}
+		
+		verticalAnchor?.let {
+			val negativeMargin = resources.getDimension(R.dimen.inkslider_indicator_negative_margin).toInt()
+			val buttonHeight = resources.getDimension(R.dimen.inkslider_button_height).toInt()
+			var newHeight = colorRowWidth - (if (visibleTopLeft) negativeMargin else 0) - (if (visibleBottomRight) negativeMargin else 0)
+			if (orientation == HORIZONTAL && colorRowWidth < buttonHeight) {
+				val correction = (buttonHeight - colorRowWidth) / 2
+				if(visibleBottomRight && !visibleTopLeft) newHeight += correction else newHeight -= correction
+			}
+			it.layoutParams = it.layoutParams.apply { height = newHeight }
 		}
 	}
 	
@@ -203,8 +221,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private fun addIcon(colorResId: Int, index: Int, maxItems: Int) {
 		linearLayoutColors?.let { linearLayout ->
 			when(orientation){
-				HORIZONTAL -> if(linearLayoutColors?.height!=colorRowSize2) { linearLayout.layoutParams = linearLayout.layoutParams.apply { height = colorRowSize2 } }
-				VERTICAL -> if(linearLayoutColors?.width!=colorRowSize2) { linearLayout.layoutParams = linearLayout.layoutParams.apply { width = colorRowSize2 } }
+				HORIZONTAL -> if(linearLayoutColors?.height!=colorRowWidth) { linearLayout.layoutParams = linearLayout.layoutParams.apply { height = colorRowWidth } }
+				VERTICAL -> if(linearLayoutColors?.width!=colorRowWidth) { linearLayout.layoutParams = linearLayout.layoutParams.apply { width = colorRowWidth } }
 			}
 			val view = View(context)
 			linearLayout.addView(view)
@@ -215,8 +233,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 				}
 				layoutParams = layoutParams.apply {
 					when(orientation) {
-						HORIZONTAL -> { width = colorRowSize; height = colorRowSize2 }
-						VERTICAL -> { height = colorRowSize; width = colorRowSize2 }
+						HORIZONTAL -> { width = colorRowHeight; height = colorRowWidth }
+						VERTICAL -> { height = colorRowHeight; width = colorRowWidth }
 					}
 				}
 			}
@@ -229,8 +247,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private fun addIcon(colorResId: Int, secondColorResId: Int, index: Int, maxItems: Int) {
 		linearLayoutColors?.let { linearLayout ->
 			when(orientation){
-				HORIZONTAL -> if(linearLayoutColors?.height!=colorRowSize2) { linearLayout.layoutParams = linearLayout.layoutParams.apply { height = colorRowSize2 } }
-				VERTICAL -> if(linearLayoutColors?.width!=colorRowSize2) { linearLayout.layoutParams = linearLayout.layoutParams.apply { width = colorRowSize2 } }
+				HORIZONTAL -> if(linearLayoutColors?.height!=colorRowWidth) { linearLayout.layoutParams = linearLayout.layoutParams.apply { height = colorRowWidth } }
+				VERTICAL -> if(linearLayoutColors?.width!=colorRowWidth) { linearLayout.layoutParams = linearLayout.layoutParams.apply { width = colorRowWidth } }
 			}
 			val view = View(context)
 			linearLayout.addView(view)
@@ -243,8 +261,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 				}
 				layoutParams = (layoutParams).apply {
 					when(orientation) {
-						VERTICAL -> { height = colorRowSize; width = colorRowSize2 }
-						HORIZONTAL -> { width = colorRowSize; height = colorRowSize2 }
+						VERTICAL -> { height = colorRowHeight; width = colorRowWidth }
+						HORIZONTAL -> { width = colorRowHeight; height = colorRowWidth }
 					}
 				}
 			}
@@ -378,8 +396,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	
 	private fun updateDisplays() {
 		//Shows/hides displays depending on current DisplayMode
-		linearLayoutDisplayTopLeft?.setVisible(visibleTopLeft, visibleTopLeft)
-		linearLayoutDisplayBottomRight?.setVisible(visibleBottomRight, visibleBottomRight)
+		linearLayoutDisplayTopLeft?.setVisible(visibleTopLeft, false)
+		linearLayoutDisplayBottomRight?.setVisible(visibleBottomRight, false)
 		linearLayoutDisplayCenter?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.CENTER, false)
 		
 		//Style display

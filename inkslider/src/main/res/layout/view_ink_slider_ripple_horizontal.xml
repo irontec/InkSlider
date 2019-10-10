@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,12 +13,12 @@
     tools:layout_height="match_parent">
     <RelativeLayout
         android:id="@+id/plus"
-        android:layout_marginBottom="@dimen/inkslider_button_top_margin_bottom"
         android:layout_width="@dimen/inkslider_button_width"
         android:layout_height="@dimen/inkslider_button_height"
-        android:layout_toEndOf="@+id/linearLayout_colors"
-        android:layout_marginStart="@dimen/inkslider_button_bottom_margin_top_right"
-        android:layout_centerVertical="true">
+        app:layout_constraintTop_toTopOf="@id/linearLayout_colors"
+        app:layout_constraintBottom_toBottomOf="@id/linearLayout_colors"
+        app:layout_constraintStart_toEndOf="@id/linearLayout_colors"
+        android:layout_marginStart="@dimen/inkslider_button_bottom_margin_top_right">
         <com.inlacou.pripple.RippleLinearLayout
             android:id="@+id/ripple_layout_top"
             android:layout_width="match_parent"
@@ -41,22 +41,31 @@
         android:id="@+id/linearLayout_colors"
         android:layout_width="wrap_content"
         tools:layout_width="200dp"
-        android:layout_height="@dimen/inkslider_row_width"
-        android:layout_centerVertical="true"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_toRightOf="@+id/minus"
         android:layout_toEndOf="@+id/minus"
+        app:layout_constraintTop_toTopOf="@id/vertical_anchor"
+        app:layout_constraintBottom_toBottomOf="@id/vertical_anchor"
+        app:layout_constraintStart_toEndOf="@+id/minus"
+        android:layout_marginStart="@dimen/inkslider_button_bottom_margin_bottom_left"
         android:orientation="horizontal"/>
+    <Space
+        android:id="@+id/vertical_anchor"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout_display_top_left"/>
     <RelativeLayout
         android:id="@+id/minus"
         android:layout_width="@dimen/inkslider_button_width"
         android:layout_height="@dimen/inkslider_button_height"
-        android:layout_marginEnd="@dimen/inkslider_button_bottom_margin_bottom_left"
-        android:layout_centerVertical="true">
+        app:layout_constraintTop_toTopOf="@id/linearLayout_colors"
+        app:layout_constraintBottom_toBottomOf="@id/linearLayout_colors"
+        app:layout_constraintStart_toStartOf="parent">
         <com.inlacou.pripple.RippleLinearLayout
             android:id="@+id/ripple_layout_bottom"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/inkslider_button_width"
+            android:layout_height="@dimen/inkslider_button_height"
             app:normal="@color/inkslider_plus_minus_button_color"
             app:ripple="@color/inkslider_plus_minus_button_color_ripple"
             app:cornerBottomRight="@dimen/inkslider_button_bottom_corner_bottom_right"
@@ -75,9 +84,10 @@
         android:id="@+id/linearLayout_display_bottom_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_below="@id/linearLayout_colors"
-        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vertical_anchor"
+        android:layout_marginTop="-10dp"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
         <ImageView
             android:id="@+id/iv_display_right_arrow"
@@ -87,8 +97,8 @@
             android:rotation="90"
             android:src="@drawable/ic_indicator_right"/>
         <View
-            android:layout_width="@dimen/inkslider_indicator_horizontal_separation"
-            android:layout_height="0dp"/>
+            android:layout_width="0dp"
+            android:layout_height="@dimen/inkslider_indicator_horizontal_separation"/>
         <TextView
             android:id="@+id/tv_display_right"
             android:layout_width="wrap_content"
@@ -107,13 +117,17 @@
         android:id="@+id/linearLayout_display_center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/linearLayout_colors"
+        app:layout_constraintBottom_toBottomOf="@id/linearLayout_colors"
         android:src="@drawable/ic_indicator_center"/>
     <LinearLayout
         android:id="@+id/linearLayout_display_top_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="-10dp"
         android:gravity="center"
         android:orientation="vertical">
         <ImageView
@@ -130,8 +144,8 @@
             android:textSize="@dimen/inkslider_indicator_text_size"
             tools:text="Left"/>
         <View
-            android:layout_width="@dimen/inkslider_indicator_horizontal_separation"
-            android:layout_height="0dp"/>
+            android:layout_width="0dp"
+            android:layout_height="@dimen/inkslider_indicator_horizontal_separation"/>
         <ImageView
             android:id="@+id/iv_display_left_arrow"
             android:layout_width="@dimen/inkslider_indicator_arrow_size"
@@ -140,4 +154,4 @@
             android:tint="@color/inkslider_indicator_arrow_color"
             android:src="@drawable/ic_indicator_left"/>
     </LinearLayout>
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

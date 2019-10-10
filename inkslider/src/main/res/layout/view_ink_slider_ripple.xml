@@ -69,7 +69,7 @@
             android:src="@drawable/ic_minus"/>
     </RelativeLayout>
     <View
-        android:id="@+id/anchor"
+        android:id="@+id/vertical_anchor"
         android:layout_width="@dimen/inkslider_row_width"
         android:layout_height="0dp"
         android:layout_toEndOf="@+id/linearLayout_display_top_left"
@@ -80,8 +80,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="-10dp"
         android:layout_marginLeft="-10dp"
-        android:layout_toEndOf="@+id/anchor"
-        android:layout_toRightOf="@+id/anchor"
+        android:layout_toEndOf="@+id/vertical_anchor"
+        android:layout_toRightOf="@+id/vertical_anchor"
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <ImageView

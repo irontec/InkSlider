@@ -9,8 +9,8 @@
 	<dimen name="inkslider_side_display_icon_width">60dp</dimen>
 	<dimen name="inkslider_side_display_icon_height">60dp</dimen>
 
-	<dimen name="inkslider_button_width">@dimen/inkslider_vertical_width_horizontal_height</dimen>
-	<dimen name="inkslider_button_height">@dimen/inkslider_vertical_width_horizontal_height</dimen>
+	<dimen name="inkslider_button_width">72dp</dimen>
+	<dimen name="inkslider_button_height">72dp</dimen>
 
 	<dimen name="inkslider_button_top_corner_top_left">64dp</dimen>
 	<dimen name="inkslider_button_top_corner_top_right">64dp</dimen>
@@ -25,4 +25,5 @@
 	<dimen name="inkslider_button_top_margin_bottom">16dp</dimen>
 	<dimen name="inkslider_button_bottom_margin_top_right">16dp</dimen>
 	<dimen name="inkslider_button_bottom_margin_bottom_left">16dp</dimen>
+	<dimen name="inkslider_indicator_negative_margin">10dp</dimen>
 </resources>

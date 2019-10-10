@@ -6,7 +6,7 @@ import com.inlacou.inkslider.HorizontalInkSlider
 import com.inlacou.inkslider.InkSliderMdl
 import com.inlacou.inksliderlibraryproject.R
 
-class BasicTemperatureSliderBase @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+class BasicTemperatureSlider @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
 	: HorizontalInkSlider(context, attrs, defStyleAttr){
 	
 	var onValueSet: ((InkSliderMdl.Item, fromUser: Boolean) -> Unit)? = null
@@ -24,7 +24,7 @@ class BasicTemperatureSliderBase @JvmOverloads constructor(context: Context, att
 		model = InkSliderMdl(
 				colors = colors
 				, values = temperatures
-				, displayMode = InkSliderMdl.DisplayMode.RIGHT_BOTTOM
+				, displayMode = InkSliderMdl.DisplayMode.LEFT_TOP
 				, onValueSet = { item: InkSliderMdl.Item, b: Boolean ->
 			onValueSet?.invoke(item, b)
 		}, onValueChange = { item: InkSliderMdl.Item, b: Boolean ->

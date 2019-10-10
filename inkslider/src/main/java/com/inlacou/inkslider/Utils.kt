@@ -15,6 +15,7 @@ import androidx.core.widget.ImageViewCompat
 import kotlin.math.roundToInt
 
 
+
 /* List manipulation */
 /**
  * Gets first selectable item.

@@ -3,12 +3,13 @@ package com.inlacou.inksliderlibraryproject.ui.sliders
 import android.content.Context
 import android.util.AttributeSet
 import com.inlacou.inkslider.BaseInkSlider
+import com.inlacou.inkslider.HorizontalInkSlider
 import com.inlacou.inkslider.InkSliderMdl
 import com.inlacou.inkslider.VerticalInkSlider
 import com.inlacou.inksliderlibraryproject.R
 
-class BasicSoundSliderBase @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-	: VerticalInkSlider(context, attrs, defStyleAttr) {
+class BasicSoundSlider @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+	: HorizontalInkSlider(context, attrs, defStyleAttr) {
 	
 	var onValueSet: ((InkSliderMdl.Item, fromUser: Boolean) -> Unit)? = null
 	var onValueChange: ((InkSliderMdl.Item, fromUser: Boolean) -> Unit)? = null
@@ -25,7 +26,7 @@ class BasicSoundSliderBase @JvmOverloads constructor(context: Context, attrs: At
 			model = InkSliderMdl(
 					colors = colors
 					, values = sounds
-					, displayMode = InkSliderMdl.DisplayMode.RIGHT_BOTTOM
+					, displayMode = InkSliderMdl.DisplayMode.BOTH_SIDES
 					, onValueSet = { item: InkSliderMdl.Item, b: Boolean ->
 				onValueSet?.invoke(item, b)
 			}, onValueChange = { item: InkSliderMdl.Item, b: Boolean ->

@@ -6,7 +6,7 @@
 	android:layout_height="match_parent"
 	android:background="@color/black_basic">
 
-	<com.inlacou.inksliderlibraryproject.ui.sliders.BasicTemperatureSliderBase
+	<com.inlacou.inksliderlibraryproject.ui.sliders.BasicTemperatureSlider
 		android:id="@+id/temp_slider"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
