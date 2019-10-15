@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -83,9 +82,9 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	 * Vertical width, horizontal height
 	 */
 	private val colorRowWidth get() = resources.getDimension(R.dimen.inkslider_row_vertical_width_horizontal_height).toInt()
-	private val indicatorCenterSpecialSize get() = resources.getDimension(R.dimen.inkslider_indicator_center_special_size).toInt()
-	private val indicatorCenterSpecialSizeSelected get() = resources.getDimension(R.dimen.inkslider_indicator_center_special_size_selected).toInt()
-	private val indicatorCenterSpecialStrokeWidth get() = resources.getDimension(R.dimen.inkslider_indicator_center_special_stroke_width).toInt()
+	private val indicatorCenterSpecialSize get() = resources.getDimension(R.dimen.inkslider_display_center_special_size).toInt()
+	private val indicatorCenterSpecialSizeSelected get() = resources.getDimension(R.dimen.inkslider_display_center_special_size_selected).toInt()
+	private val indicatorCenterSpecialStrokeWidth get() = resources.getDimension(R.dimen.inkslider_display_center_special_stroke_width).toInt()
 	private val totalSize get() = model.colors.size*colorRowHeight
 	private val stepSize get() = totalSize/(items.size)
 	private val topSpacing get() = linearLayoutColors?.getCoordinates()?.top ?: 0
@@ -172,6 +171,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		linearLayoutDisplayTopLeft?.setVisible(visible = false, holdSpaceOnDissapear = visibleTopLeft)
 		linearLayoutDisplayBottomRight?.setVisible(visible = false, holdSpaceOnDissapear = visibleBottomRight)
 		linearLayoutDisplayCenter?.setVisible(visible = false, holdSpaceOnDissapear = false)
+		linearLayoutDisplayCenterSpecial?.setVisible(visible = false, holdSpaceOnDissapear = false)
 		
 		ivDisplayRight?.setVisible(visible = false, holdSpaceOnDissapear = false)
 		ivDisplayLeft?.setVisible(visible = false, holdSpaceOnDissapear = false)
@@ -191,7 +191,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		}
 		
 		anchor?.let {
-			val negativeMargin = resources.getDimension(R.dimen.inkslider_indicator_negative_margin).toInt()
+			val negativeMargin = resources.getDimension(R.dimen.inkslider_display_negative_margin).toInt()
 			val buttonHeight = resources.getDimension(R.dimen.inkslider_button_height).toInt()
 			val buttonWidth = resources.getDimension(R.dimen.inkslider_button_width).toInt()
 			if(orientation == HORIZONTAL) {

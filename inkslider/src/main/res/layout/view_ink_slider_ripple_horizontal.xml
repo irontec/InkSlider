@@ -99,15 +99,15 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:textColor="@color/inkslider_text_color"
-            android:textSize="@dimen/inkslider_indicator_text_size"
+            android:textSize="@dimen/inkslider_display_text_size"
             tools:text="Left"/>
         <View
             android:layout_width="0dp"
-            android:layout_height="@dimen/inkslider_indicator_horizontal_separation"/>
+            android:layout_height="@dimen/inkslider_display_horizontal_separation"/>
         <ImageView
             android:id="@+id/iv_display_left_arrow"
-            android:layout_width="@dimen/inkslider_indicator_arrow_size"
-            android:layout_height="@dimen/inkslider_indicator_arrow_size"
+            android:layout_width="@dimen/inkslider_display_arrow_size"
+            android:layout_height="@dimen/inkslider_display_arrow_size"
             android:rotation="90"
             android:tint="@color/inkslider_indicator_arrow_color"
             android:src="@drawable/ic_indicator_left"/>
@@ -122,8 +122,8 @@
         android:src="@drawable/ic_indicator_center"/>
     <View
         android:id="@+id/linearLayout_display_center_special"
-        android:layout_width="@dimen/inkslider_indicator_center_special_size"
-        android:layout_height="@dimen/inkslider_indicator_center_special_size"
+        android:layout_width="@dimen/inkslider_display_center_special_size"
+        android:layout_height="@dimen/inkslider_display_center_special_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/linearLayout_colors"
         app:layout_constraintBottom_toBottomOf="@id/linearLayout_colors"/>
@@ -137,21 +137,21 @@
         android:orientation="vertical">
         <ImageView
             android:id="@+id/iv_display_right_arrow"
-            android:layout_width="@dimen/inkslider_indicator_arrow_size"
-            android:layout_height="@dimen/inkslider_indicator_arrow_size"
+            android:layout_width="@dimen/inkslider_display_arrow_size"
+            android:layout_height="@dimen/inkslider_display_arrow_size"
             android:tint="@color/inkslider_indicator_arrow_color"
             android:rotation="90"
             android:src="@drawable/ic_indicator_right"/>
         <View
             android:layout_width="0dp"
-            android:layout_height="@dimen/inkslider_indicator_horizontal_separation"/>
+            android:layout_height="@dimen/inkslider_display_horizontal_separation"/>
         <TextView
             android:id="@+id/tv_display_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:textColor="@color/inkslider_text_color"
-            android:textSize="@dimen/inkslider_indicator_text_size"
+            android:textSize="@dimen/inkslider_display_text_size"
             tools:text="Right"/>
         <ImageView
             android:id="@+id/iv_display_right"
