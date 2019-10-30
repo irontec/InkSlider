@@ -23,7 +23,7 @@ class InkSliderCtrl(val view: BaseInkSlider, var model: InkSliderMdl) {
 		if (currentItemPos > 0) model.values[currentItemPos - 1].let {
 			if (it.selectable) model.currentItem = it
 		}
-		view.forceUpdate()
+		view.forceUpdate(true)
 	}
 	
 	fun onMinusClick(){
@@ -32,7 +32,7 @@ class InkSliderCtrl(val view: BaseInkSlider, var model: InkSliderMdl) {
 		if (currentItemPos < model.values.size - 1) model.values[currentItemPos + 1].let {
 			if (it.selectable) model.currentItem = it
 		}
-		view.forceUpdate()
+		view.forceUpdate(true)
 	}
 	/* /Button clicks */
 	

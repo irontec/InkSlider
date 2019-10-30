@@ -64,7 +64,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		private set(value) {
 			if(model.currentItem!=value){
 				model.currentItem = value
-				forceUpdate()
+				forceUpdate(false)
 				controller.onCurrentItemChanged(value, false)
 			}
 		}
@@ -86,7 +86,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private val indicatorCenterSpecialSizeSelected get() = resources.getDimension(R.dimen.inkslider_display_center_special_size_selected).toInt()
 	private val indicatorCenterSpecialStrokeWidth get() = resources.getDimension(R.dimen.inkslider_display_center_special_stroke_width).toInt()
 	private val totalSize get() = model.colors.size*colorRowHeight
-	private val stepSize get() = totalSize/(items.size)
+	private val stepSize: Float get() = totalSize/(items.size.toFloat())
 	private val topSpacing get() = linearLayoutColors?.getCoordinates()?.top ?: 0
 	private val leftSpacing get() = linearLayoutColors?.getCoordinates()?.left ?: 0
 	
@@ -122,18 +122,17 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	}
 	
 	fun setCurrentItemByIndex(volume: Int, fireListener: Boolean) {
+		//TODO if reverse
 		if(currentItem.display!=items[volume].display) {
 			model.currentItem = items[volume]
-			forceUpdate()
-			model.onValueSet?.invoke(model.currentItem, fireListener)
+			forceUpdate(fireListener)
 		}
 	}
 	
 	fun setCurrentItem(item: InkSliderMdl.Item, fireListener: Boolean) {
 		if(currentItem.display!=item.display) {
 			model.currentItem = item
-			forceUpdate()
-			model.onValueSet?.invoke(model.currentItem, fireListener)
+			forceUpdate(fireListener)
 		}
 	}
 	
@@ -353,14 +352,14 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		rippleLayoutPlus?.isClickable = true
 		rippleLayoutPlus?.setOnTouchListener { view, motionEvent ->
 			when(motionEvent?.action){
-				android.view.MotionEvent.ACTION_DOWN -> {
+				MotionEvent.ACTION_DOWN -> {
 					//Start
 					attemptClaimDrag()
 					controller.onPlusClick()
 					longClickLastTrigger = System.currentTimeMillis()
 					longClickSpeed = longClickSpeedMax
 				}
-				android.view.MotionEvent.ACTION_MOVE -> {
+				MotionEvent.ACTION_MOVE -> {
 					rippleLayoutPlus?.onTouchEvent(motionEvent)
 					val now = System.currentTimeMillis()
 					if(now-longClickLastTrigger>longClickSpeed) {
@@ -376,14 +375,14 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		rippleLayoutMinus?.isClickable = true
 		rippleLayoutMinus?.setOnTouchListener { view, motionEvent ->
 			when(motionEvent?.action){
-				android.view.MotionEvent.ACTION_DOWN -> {
+				MotionEvent.ACTION_DOWN -> {
 					//Start
 					attemptClaimDrag()
 					controller.onMinusClick()
 					longClickLastTrigger = System.currentTimeMillis()
 					longClickSpeed = longClickSpeedMax
 				}
-				android.view.MotionEvent.ACTION_MOVE -> {
+				MotionEvent.ACTION_MOVE -> {
 					val now = System.currentTimeMillis()
 					if(now-longClickLastTrigger>longClickSpeed) {
 						longClickLastTrigger = now
@@ -422,7 +421,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 				}
 				MotionEvent.ACTION_CANCEL -> false
 				MotionEvent.ACTION_UP -> {
-					if(model.hardSteps) forceUpdate() else controller.onTouchRelease()
+					if(model.hardSteps) forceUpdate(true) else controller.onTouchRelease()
 					false
 				}
 				MotionEvent.ACTION_MOVE -> true
@@ -431,7 +430,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		}
 	}
 	
-	internal fun forceUpdate() {
+	internal fun forceUpdate(fromUser: Boolean) {
 		val currentItemPos = model.values.indexOf(model.currentItem)
 		currentPosition = if(reversed) {
 			totalSize-(stepSize*currentItemPos)
@@ -439,7 +438,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			stepSize*currentItemPos
 		}.toFloat()
 		updateDisplays()
-		controller.onValueSet(false)
+		controller.onValueSet(fromUser)
 	}
 	
 	private fun updateDisplays(touching: Boolean = false) {
@@ -536,7 +535,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	 * Changes component to it's enabled (expanded) state
 	 */
 	private fun onEnabled() {
-		linearLayoutColors?.onDrawn { forceUpdate() }
+		linearLayoutColors?.onDrawn { forceUpdate(false) } //TODO maybe not correct fromUser value
 		addItems()
 	}
 	
