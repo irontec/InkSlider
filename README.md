@@ -74,6 +74,17 @@ Library to make fancy selector sliders. Indicators can be shown on both sides, o
 </resources>
 ```
 
+### Colors
+
+```XML
+<resources>
+	<color name="inkslider_plus_minus_button_color">@color/colorprimary</color>
+	<color name="inkslider_plus_minus_button_color_ripple">@color/colorprimaryripple</color>
+	<color name="inkslider_plus_minus_button_icon_color">#FFF</color>
+	<color name="inkslider_indicator_arrow_color">#FFF</color>
+</resources>
+```
+
 # Examples
 
 Temperature slider class:
