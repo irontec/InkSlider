@@ -34,6 +34,6 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation 'com.github.inlacou:PRipple:1.2.0'
-    compileOnly 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
+    implementation 'com.github.inlacou:PRipple:1.3.0'
+    compileOnly 'androidx.constraintlayout:constraintlayout:2.0.0-beta3'
 }
