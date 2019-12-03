@@ -4,9 +4,6 @@
 
 Library to make fancy selector sliders. Indicators can be shown on both sides, one or none. Values and colors are not linked, so you can have a lot more values than colors.
 
-![temp gif](https://github.com/irontec/InkSlider/blob/master/temp.gif)
-![soung gif](https://github.com/irontec/InkSlider/blob/master/sound.gif)
-
 # Parametrization
 
 ## By code
