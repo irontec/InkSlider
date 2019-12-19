@@ -1,9 +1,10 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'maven'
+
 android {
     compileSdkVersion 29
-
 
     defaultConfig {
         minSdkVersion 18
@@ -37,3 +38,28 @@ dependencies {
     implementation 'com.github.inlacou:PRipple:1.3.0'
     compileOnly 'androidx.constraintlayout:constraintlayout:2.0.0-beta3'
 }
+
+// AAR UPLOADING
+def nexusPropsFile = file('../nexus/nexus.properties')
+Properties nexusProps = new Properties()
+
+if (nexusPropsFile.canRead()) {
+    nexusProps.load(new FileInputStream(nexusPropsFile))
+}
+def nexusUrl = nexusProps['nexusUrl']
+def nexusUsername = nexusProps['nexusUsername']
+def nexusPassword = nexusProps['nexusPassword']
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "$nexusUrl/repository/maven-releases/") {
+                authentication(userName: "$nexusUsername", password: "$nexusPassword")
+                pom.groupId = "com.irizar.slider"
+                pom.artifactId = "inkslider"
+                pom.version = '1.3.5.1'
+            }
+        }
+    }
+}
+
