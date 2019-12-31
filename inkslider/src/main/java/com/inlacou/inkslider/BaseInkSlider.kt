@@ -121,19 +121,37 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		linearLayoutColors?.startAnimation(animation)
 	}
 	
-	fun setCurrentItemByIndex(volume: Int, fireListener: Boolean) {
+	fun setCurrentItemByIndex(volume: Int, fireListener: Boolean): Boolean {
+		if(model.ignoreInputWhileUserInteraction) return false
 		//TODO if reverse
 		if(currentItem.display!=items[volume].display) {
 			model.currentItem = items[volume]
 			forceUpdate(fireListener)
+			return true
 		}
+		return false
 	}
 	
-	fun setCurrentItem(item: InkSliderMdl.Item, fireListener: Boolean) {
+	fun setCurrentItem(item: InkSliderMdl.Item, fireListener: Boolean): Boolean {
+		if(model.ignoreInputWhileUserInteraction) return false
 		if(currentItem.display!=item.display) {
 			model.currentItem = item
 			forceUpdate(fireListener)
+			return true
 		}
+		return false
+	}
+	
+	fun setCurrentItemByValue(item: Any, fireListener: Boolean): Boolean {
+		if(model.ignoreInputWhileUserInteraction) return false
+		model.values.find { it.value==item }?.let { return setCurrentItem(it, fireListener) }
+		return false
+	}
+	
+	fun setCurrentItemByDisplay(display: String, fireListener: Boolean): Boolean {
+		if(model.ignoreInputWhileUserInteraction) return false
+		model.values.find { it.display.string==display }?.let { return setCurrentItem(it, fireListener) }
+		return false
 	}
 	
 	/**

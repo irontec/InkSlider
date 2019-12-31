@@ -41,7 +41,11 @@ data class InkSliderMdl(
 		/**
 		 * If view is enabled or disabled
 		 */
-		var enabled: Boolean = true
+		var enabled: Boolean = true,
+		/**
+		 * If true, this will ignore the tries to set current value programatically when the user is touching the slider.
+		 */
+		var ignoreInputWhileUserInteraction: Boolean = false
 ){
 	enum class DisplayMode {
 		/**
