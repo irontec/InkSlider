@@ -85,4 +85,5 @@ data class InkSliderMdl(
 	var disabled
 		get() = !enabled
 	    set(value) { enabled = !value }
+	internal var userTouch = false
 }

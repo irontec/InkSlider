@@ -122,7 +122,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	}
 	
 	fun setCurrentItemByIndex(volume: Int, fireListener: Boolean): Boolean {
-		if(model.ignoreInputWhileUserInteraction) return false
+		if(model.ignoreInputWhileUserInteraction && model.userTouch) return false
 		//TODO if reverse
 		if(currentItem.display!=items[volume].display) {
 			model.currentItem = items[volume]
@@ -133,7 +133,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	}
 	
 	fun setCurrentItem(item: InkSliderMdl.Item, fireListener: Boolean): Boolean {
-		if(model.ignoreInputWhileUserInteraction) return false
+		if(model.ignoreInputWhileUserInteraction && model.userTouch) return false
 		if(currentItem.display!=item.display) {
 			model.currentItem = item
 			forceUpdate(fireListener)
@@ -143,13 +143,13 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	}
 	
 	fun setCurrentItemByValue(item: Any, fireListener: Boolean): Boolean {
-		if(model.ignoreInputWhileUserInteraction) return false
+		if(model.ignoreInputWhileUserInteraction && model.userTouch) return false
 		model.values.find { it.value==item }?.let { return setCurrentItem(it, fireListener) }
 		return false
 	}
 	
 	fun setCurrentItemByDisplay(display: String, fireListener: Boolean): Boolean {
-		if(model.ignoreInputWhileUserInteraction) return false
+		if(model.ignoreInputWhileUserInteraction && model.userTouch) return false
 		model.values.find { it.display.string==display }?.let { return setCurrentItem(it, fireListener) }
 		return false
 	}
@@ -386,6 +386,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 						controller.onPlusClick()
 					}
 				}
+				MotionEvent.ACTION_UP -> { controller.onPlusRelease() }
 			}
 			false
 		}
@@ -408,6 +409,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 						controller.onMinusClick()
 					}
 				}
+				MotionEvent.ACTION_UP -> { controller.onMinusRelease() }
 			}
 			false
 		}
@@ -435,6 +437,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			when(event.action){
 				MotionEvent.ACTION_DOWN -> {
 					attemptClaimDrag()
+					controller.onTouchStart()
 					true
 				}
 				MotionEvent.ACTION_CANCEL -> false
