@@ -451,7 +451,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		}
 	}
 	
-	internal fun forceUpdate(fromUser: Boolean) {
+	fun forceUpdate(fromUser: Boolean) {
 		val currentItemPos = model.values.indexOf(model.currentItem)
 		currentPosition = if(reversed) {
 			totalSize-(stepSize*currentItemPos)
