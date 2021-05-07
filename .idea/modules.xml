@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/InkSliderLibraryProject.iml" filepath="$PROJECT_DIR$/InkSliderLibraryProject.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/inkslider/inkslider.iml" filepath="$PROJECT_DIR$/inkslider/inkslider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/InkSliderLibraryProject.iml" filepath="$PROJECT_DIR$/.idea/modules/InkSliderLibraryProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/InkSliderLibraryProject.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/InkSliderLibraryProject.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/inkslider/InkSliderLibraryProject.inkslider.iml" filepath="$PROJECT_DIR$/.idea/modules/inkslider/InkSliderLibraryProject.inkslider.iml" />
     </modules>
   </component>
 </project>
