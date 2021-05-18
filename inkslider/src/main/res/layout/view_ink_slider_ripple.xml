@@ -29,8 +29,8 @@
             app:cornerTopRight="@dimen/inkslider_button_top_corner_top_right"
             app:cornerTopLeft="@dimen/inkslider_button_top_corner_top_left"/>
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/inkslider_button_icon_width"
+            android:layout_height="@dimen/inkslider_button_icon_height"
             android:contentDescription="@string/button_to_increase_value"
             android:tint="@color/inkslider_plus_minus_button_icon_color"
             android:layout_centerInParent="true"
@@ -72,8 +72,8 @@
             app:cornerTopRight="@dimen/inkslider_button_bottom_corner_top_right"
             app:cornerTopLeft="@dimen/inkslider_button_bottom_corner_top_left"/>
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/inkslider_button_icon_width"
+            android:layout_height="@dimen/inkslider_button_icon_height"
             android:tint="@color/inkslider_plus_minus_button_icon_color"
             android:contentDescription="@string/button_to_decrease_value"
             android:layout_centerInParent="true"

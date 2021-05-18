@@ -17,6 +17,8 @@
 	<!-- BUTTONS -->
 	<dimen name="inkslider_button_width">72dp</dimen>
 	<dimen name="inkslider_button_height">72dp</dimen>
+	<dimen name="inkslider_button_icon_width">65dp</dimen>
+	<dimen name="inkslider_button_icon_height">65dp</dimen>
 
 	<!-- TOP BUTTON CORNERS -->
 	<dimen name="inkslider_button_top_corner_top_left">64dp</dimen>
