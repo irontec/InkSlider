@@ -24,6 +24,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textColor="@color/white_basic"
+			tools:text="20ºC"
 			app:layout_constraintLeft_toLeftOf="parent"
 			app:layout_constraintRight_toRightOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/temp_slider"/>
@@ -32,8 +33,25 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textColor="@color/white_basic"
+			tools:text="20ºC"
 			app:layout_constraintLeft_toLeftOf="parent"
 			app:layout_constraintRight_toRightOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/tv_display"/>
+		<Button
+			android:id="@+id/bt_enable_disable"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/tv_display_realtime"
+			android:text="disable"/>
+		<Button
+			android:id="@+id/bt_expand_collapse"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/bt_enable_disable"
+			android:text="collapse"/>
 	</androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

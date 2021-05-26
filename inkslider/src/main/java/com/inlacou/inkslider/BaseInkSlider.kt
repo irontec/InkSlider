@@ -5,12 +5,15 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.*
 import com.inlacou.inkslider.InkSliderMdl.Orientation.*
 import com.inlacou.pripple.RippleLinearLayout
+import com.inlacou.pripple.RippleRelativeLayout
+import com.inlacou.pripple.batchEdit
 import kotlin.math.roundToInt
 
 abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
@@ -30,9 +33,11 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private var ivDisplayRight: ImageView? = null
 	private var ivDisplayLeftArrow: ImageView? = null
 	private var ivDisplayRightArrow: ImageView? = null
-	private var rippleLayoutPlus: RippleLinearLayout? = null
-	private var rippleLayoutMinus: RippleLinearLayout? = null
 	private var linearLayoutDisplayCenterSpecial: View? = null
+	private var rippleLayoutPlus: RippleRelativeLayout? = null
+	private var rippleLayoutMinus: RippleRelativeLayout? = null
+	private var ivPlus: ImageView? = null
+	private var ivMinus: ImageView? = null
 	
 	private fun bindViews() {
 		anchor = findViewById(R.id.anchor)
@@ -46,8 +51,10 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		ivDisplayRight = findViewById(R.id.iv_display_right)
 		ivDisplayLeftArrow = findViewById(R.id.iv_display_left_arrow)
 		ivDisplayRightArrow = findViewById(R.id.iv_display_right_arrow)
-		rippleLayoutPlus = findViewById(R.id.ripple_layout_top)
-		rippleLayoutMinus = findViewById(R.id.ripple_layout_bottom)
+		rippleLayoutPlus = findViewById(R.id.ripple_layout_plus)
+		rippleLayoutMinus = findViewById(R.id.ripple_layout_minus)
+		ivPlus = findViewById(R.id.iv_plus)
+		ivMinus = findViewById(R.id.iv_minus)
 		linearLayoutDisplayCenterSpecial = findViewById(R.id.linearLayout_display_center_special)
 	}
 	
@@ -159,6 +166,8 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	 */
 	override fun isEnabled(): Boolean = model.enabled
 	
+	fun isExpanded(): Boolean = model.expanded
+	
 	/**
 	 * Changes the component enabled state and updates it accordingly
 	 */
@@ -166,6 +175,14 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		val changed = enabled!=model.enabled
 		model.enabled = enabled
 		if(changed) if(enabled) onEnabled() else onDisabled()
+	}
+	/**
+	 * Changes the component enabled state and updates it accordingly
+	 */
+	fun setExpanded(expanded: Boolean) {
+		val changed = expanded!=model.expanded
+		model.expanded = expanded
+		if(changed) if(expanded) onExpanded() else onCollapsed()
 	}
 	/* /Public methods */
 	
@@ -247,19 +264,21 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	 */
 	private fun addItems() {
 		val colors = if(reversed) model.colors.asReversed() else model.colors
-		when {
-			model.colorMode==InkSliderMdl.ColorMode.GRADIENT -> colors.forEachIndexed { index: Int, item: Int -> addIcon(if (index > 0) colors[index - 1] else item, item, index, colors.size) }
-			model.colorMode==InkSliderMdl.ColorMode.NORMAL -> colors.forEachIndexed { index: Int, item: Int -> addIcon(item, index, colors.size) }
+		val disabledMode = model.disableMode
+		when  {
+			model.disabled && disabledMode is InkSliderMdl.DisableModes.Tint -> colors.forEachIndexed { index: Int, item: Int -> addRow(resources.getColorCompat(disabledMode.tintColor), index, colors.size) }
+			model.colorMode==InkSliderMdl.ColorMode.NORMAL -> colors.forEachIndexed { index: Int, item: Int -> addRow(item, index, colors.size) }
+			model.colorMode==InkSliderMdl.ColorMode.GRADIENT -> colors.forEachIndexed { index: Int, item: Int -> addRow(if(index > 0) colors[index - 1] else item, item, index, colors.size) }
 			model.colorMode==InkSliderMdl.ColorMode.GRADIENT_CONTINUOUS -> addGradient(colors)
 		}
 	}
 	
 	/**
-	 * Adds an icon to the linearLayout with provided {@param colorResId} background color
+	 * Adds a row to the linearLayout with provided {@param colorResId} solid color background
 	 */
-	private fun addIcon(colorResId: Int, index: Int, maxItems: Int) {
+	private fun addRow(colorResId: Int, index: Int, maxItems: Int) {
 		linearLayoutColors?.let { linearLayout ->
-			when(orientation){
+			when(orientation) {
 				HORIZONTAL -> if(linearLayoutColors?.height!=colorRowWidth) { linearLayout.layoutParams = linearLayout.layoutParams.apply { height = colorRowWidth } }
 				VERTICAL -> if(linearLayoutColors?.width!=colorRowWidth) { linearLayout.layoutParams = linearLayout.layoutParams.apply { width = colorRowWidth } }
 			}
@@ -281,9 +300,9 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	}
 	
 	/**
-	 * Adds an icon to the linearLayout with provided {@param colorResId} background color
+	 * Adds a row to the linearLayout with provided {@param colorResId} to {@param secondColorResId} gradient background
 	 */
-	private fun addIcon(colorResId: Int, secondColorResId: Int, index: Int, maxItems: Int) {
+	private fun addRow(colorResId: Int, secondColorResId: Int, index: Int, maxItems: Int) {
 		linearLayoutColors?.let { linearLayout ->
 			when(orientation){
 				HORIZONTAL -> if(linearLayoutColors?.height!=colorRowWidth) { linearLayout.layoutParams = linearLayout.layoutParams.apply { height = colorRowWidth } }
@@ -369,6 +388,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		//Touch listeners
 		rippleLayoutPlus?.isClickable = true
 		rippleLayoutPlus?.setOnTouchListener { view, motionEvent ->
+			if(model.disabled && !model.disableMode.reactToUserInput) return@setOnTouchListener false
 			when(motionEvent?.action){
 				MotionEvent.ACTION_DOWN -> {
 					//Start
@@ -393,6 +413,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		
 		rippleLayoutMinus?.isClickable = true
 		rippleLayoutMinus?.setOnTouchListener { view, motionEvent ->
+			if(model.disabled && !model.disableMode.reactToUserInput) return@setOnTouchListener false
 			when(motionEvent?.action){
 				MotionEvent.ACTION_DOWN -> {
 					//Start
@@ -416,6 +437,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		
 		//Touch listener
 		linearLayoutColors?.setOnTouchListener { _, event ->
+			if(model.disabled && !model.disableMode.reactToUserInput) return@setOnTouchListener false
 			val relativePosition = when(orientation){
 				VERTICAL -> event.y
 				HORIZONTAL -> event.x
@@ -434,7 +456,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			model.currentItem = newItem
 			updateDisplays(event.action==MotionEvent.ACTION_MOVE || event.action==MotionEvent.ACTION_DOWN)
 			
-			when(event.action){
+			when(event.action) {
 				MotionEvent.ACTION_DOWN -> {
 					attemptClaimDrag()
 					controller.onTouchStart()
@@ -464,10 +486,10 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	
 	private fun updateDisplays(touching: Boolean = false) {
 		//Shows/hides displays depending on current DisplayMode
-		linearLayoutDisplayTopLeft?.setVisible(visibleTopLeft, false)
-		linearLayoutDisplayBottomRight?.setVisible(visibleBottomRight, false)
-		linearLayoutDisplayCenter?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.CENTER, false)
-		linearLayoutDisplayCenterSpecial?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.CENTER_SPECIAL, false)
+		linearLayoutDisplayTopLeft?.setVisible(visibleTopLeft && !(model.disabled && !model.disableMode.showIndicator), false)
+		linearLayoutDisplayBottomRight?.setVisible(visibleBottomRight && !(model.disabled && !model.disableMode.showIndicator), false)
+		linearLayoutDisplayCenter?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.CENTER && !(model.disabled && !model.disableMode.showIndicator), false)
+		linearLayoutDisplayCenterSpecial?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.CENTER_SPECIAL && !(model.disabled && !model.disableMode.showIndicator), false)
 		
 		//Style display
 		model.currentItem.display.let { display ->
@@ -504,11 +526,19 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 				ivDisplayLeftArrow?.tint(it)
 				ivDisplayRightArrow?.tint(it)
 			}
-			display.textColor?.let {
-				linearLayoutDisplayCenterSpecial?.let { view ->
+			linearLayoutDisplayCenterSpecial?.let { view ->
+				var color: Int? = null
+				display.textColor?.let {
+					color = it
+				}
+				val disableMode = model.disableMode
+				if(model.disabled && disableMode is InkSliderMdl.DisableModes.Tint) {
+					color = resources.getColorCompat(disableMode.tintColor)
+				}
+				color?.let {
 					view.layoutParams = view.layoutParams?.apply {
-						width = if(touching) indicatorCenterSpecialSizeSelected else indicatorCenterSpecialSize
-						height = if(touching) indicatorCenterSpecialSizeSelected else indicatorCenterSpecialSize
+						width = if (touching) indicatorCenterSpecialSizeSelected else indicatorCenterSpecialSize
+						height = if (touching) indicatorCenterSpecialSizeSelected else indicatorCenterSpecialSize
 					}
 					view.background = GradientDrawable().apply {
 						cornerRadius = 300f
@@ -522,22 +552,28 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		//Set display position
 		when(orientation){
 			HORIZONTAL -> {
+				Log.d("InkSlider", "horizontal position: $currentPosition")
 				currentPosition?.toInt()?.let {
 					if (it in 1 until (linearLayoutColors?.width ?: width)) {
 						linearLayoutDisplayTopLeft?.setMargins(left = it-((linearLayoutDisplayTopLeft?.width?:0)/2)+leftSpacing)
 						linearLayoutDisplayBottomRight?.setMargins(left = it-((linearLayoutDisplayBottomRight?.width?:0)/2)+leftSpacing)
 						linearLayoutDisplayCenter?.setMargins(left = it-((linearLayoutDisplayCenter?.width?:0)/2)+leftSpacing)
 						linearLayoutDisplayCenterSpecial?.setMargins(left = it-((linearLayoutDisplayCenterSpecial?.width?:0)/2)+leftSpacing)
+					}else{
+						Log.d("InkSlider", "horizontal else ${(linearLayoutColors?.width ?: width)}")
 					}
 				}
 			}
 			VERTICAL -> {
+				Log.d("InkSlider", "vertical position: $currentPosition")
 				currentPosition?.toInt()?.let {
 					if (it in 1 until (linearLayoutColors?.height ?: height)) {
-						linearLayoutDisplayTopLeft?.setMargins(top = it-((linearLayoutDisplayTopLeft?.height?:0)/2)+topSpacing)
-						linearLayoutDisplayBottomRight?.setMargins(top = it-((linearLayoutDisplayBottomRight?.height?:0)/2)+topSpacing)
-						linearLayoutDisplayCenter?.setMargins(top = it-((linearLayoutDisplayCenter?.height?:0)/2)+topSpacing)
-						linearLayoutDisplayCenterSpecial?.setMargins(top = it-((linearLayoutDisplayCenterSpecial?.height?:0)/2)+topSpacing)
+						linearLayoutDisplayTopLeft?.setMargins(top = it - ((linearLayoutDisplayTopLeft?.height ?: 0) / 2) + topSpacing)
+						linearLayoutDisplayBottomRight?.setMargins(top = it - ((linearLayoutDisplayBottomRight?.height ?: 0) / 2) + topSpacing)
+						linearLayoutDisplayCenter?.setMargins(top = it - ((linearLayoutDisplayCenter?.height ?: 0) / 2) + topSpacing)
+						linearLayoutDisplayCenterSpecial?.setMargins(top = it - (resources.getDimension(R.dimen.inkslider_display_center_special_size).toInt() / 2) + topSpacing)
+					} else {
+						Log.d("InkSlider", "vertical else ${(linearLayoutColors?.height ?: height)}")
 					}
 				}
 			}
@@ -553,19 +589,60 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	}
 	
 	/**
-	 * Changes component to it's enabled (expanded) state
+	 * Changes component to it's expanded state
 	 */
-	private fun onEnabled() {
-		linearLayoutColors?.onDrawn { forceUpdate(false) } //TODO maybe not correct fromUser value
+	private fun onExpanded() {
+		clearItems()
+		linearLayoutColors?.onDrawn { forceUpdate(true) } //TODO only when coming from empty
 		addItems()
 	}
 	
 	/**
-	 * Changes component to it's disabled (collapsed) state
+	 * Changes component to it's collapsed state
 	 */
-	private fun onDisabled() {
+	private fun onCollapsed() {
 		clearItems()
 		clearDisplays()
+	}
+	
+	/**
+	 * Changes component to it's enabled state
+	 */
+	private fun onEnabled() {
+		updateButtonThemes()
+		if(isExpanded()) {
+			clearItems()
+			linearLayoutColors?.onDrawn { forceUpdate(true) } //TODO only when coming from empty
+			addItems()
+		}
+	}
+	
+	/**
+	 * Changes component to it's disabled state
+	 */
+	private fun onDisabled() {
+		updateButtonThemes()
+		if(isExpanded()) {
+			clearItems()
+			linearLayoutColors?.onDrawn { forceUpdate(true) } //TODO only when coming from empty
+			addItems()
+		}
+	}
+	
+	private fun updateButtonThemes() {
+		val disabledMode = model.disableMode
+		rippleLayoutPlus?.batchEdit {
+			this.normalBackgroundColor = resources.getColorCompat(if(!model.enabled && disabledMode is InkSliderMdl.DisableModes.Tint) disabledMode.tintColor else R.color.inkslider_plus_minus_button_color)
+			this.rippleBackgroundColor = resources.getColorCompat(if(!model.enabled && disabledMode is InkSliderMdl.DisableModes.Tint) disabledMode.tintColorAccent else R.color.inkslider_plus_minus_button_color_ripple)
+		}
+		rippleLayoutMinus?.batchEdit {
+			this.normalBackgroundColor = resources.getColorCompat(if(!model.enabled && disabledMode is InkSliderMdl.DisableModes.Tint) disabledMode.tintColor else R.color.inkslider_plus_minus_button_color)
+			this.rippleBackgroundColor = resources.getColorCompat(if(!model.enabled && disabledMode is InkSliderMdl.DisableModes.Tint) disabledMode.tintColorAccent else R.color.inkslider_plus_minus_button_color_ripple)
+		}
+		rippleLayoutPlus?.isEnabled = model.enabled || model.disableMode.reactToUserInput
+		rippleLayoutMinus?.isEnabled = model.enabled || model.disableMode.reactToUserInput
+		ivPlus?.tint(if(!model.enabled && disabledMode is InkSliderMdl.DisableModes.Tint) disabledMode.tintColorAccent else R.color.inkslider_plus_minus_button_icon_color)
+		ivMinus?.tint(if(!model.enabled && disabledMode is InkSliderMdl.DisableModes.Tint) disabledMode.tintColorAccent else R.color.inkslider_plus_minus_button_icon_color)
 	}
 	
 }

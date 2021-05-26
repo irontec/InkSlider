@@ -1,52 +1,66 @@
 package com.inlacou.inkslider
 
 data class InkSliderMdl(
-		/**
-		 * All available colors. There can be more or less colors than values.
-		 */
-		var colors: List<Int>,
-		/**
-		 * All available values. There can be more or less values than colors.
-		 */
-		var values: List<Item>,
-		/**
-		 * Item currently selected
-		 */
-		var currentItem: Item = values.last(),
-		/**
-		 * Which side to display marker
-		 */
-		val displayMode: DisplayMode = DisplayMode.CENTER,
-		/**
-		 * How to display colors
-		 */
-		val colorMode: ColorMode = ColorMode.GRADIENT_CONTINUOUS,
-		/**
-		 * Corners on color bar edges
-		 */
-		val cornerRadius: Float = 100f,
-		val reverse: Boolean = false,
-		/**
-		 * Called on value change (once, on button click or on press release)
-		 */
-		val onValueSet: ((item: Item, fromUser: Boolean) -> Unit)? = null,
-		/**
-		 * Called on value change (continuous while user moves the finger)
-		 */
-		val onValueChange: ((item: Item, fromUser: Boolean) -> Unit)? = null,
-		/**
-		 * Defines if the marker can stop in any place when user press released, or only on some hard points (the center of the realm associated with a value)
-		 */
-		val hardSteps: Boolean = true,
-		/**
-		 * If view is enabled or disabled
-		 */
-		var enabled: Boolean = true,
-		/**
-		 * If true, this will ignore the tries to set current value programatically when the user is touching the slider.
-		 */
-		var ignoreInputWhileUserInteraction: Boolean = false
+	/**
+	 * All available colors. There can be more or less colors than values.
+	 */
+	var colors: List<Int>,
+	/**
+	 * All available values. There can be more or less values than colors.
+	 */
+	var values: List<Item>,
+	/**
+	 * Item currently selected
+	 */
+	var currentItem: Item = values.last(),
+	/**
+	 * Which side to display marker
+	 */
+	val displayMode: DisplayMode = DisplayMode.CENTER,
+	/**
+	 * How to display colors
+	 */
+	val colorMode: ColorMode = ColorMode.GRADIENT_CONTINUOUS,
+	/**
+	 * Corners on color bar edges
+	 */
+	val cornerRadius: Float = 100f,
+	val reverse: Boolean = false,
+	/**
+	 * Called on value change (once, on button click or on press release)
+	 */
+	val onValueSet: ((item: Item, fromUser: Boolean) -> Unit)? = null,
+	/**
+	 * Called on value change (continuous while user moves the finger)
+	 */
+	val onValueChange: ((item: Item, fromUser: Boolean) -> Unit)? = null,
+	/**
+	 * Defines if the marker can stop in any place when user press released, or only on some hard points (the center of the realm associated with a value)
+	 */
+	val hardSteps: Boolean = true,
+	/**
+	 * If view is enabled or disabled
+	 */
+	var enabled: Boolean = true,
+	/**
+	 * How to modify the view when disabled
+	 */
+	var disableMode: DisableModes = DisableModes.Tint(R.color.inkslider_disabled_tint_color, R.color.inkslider_disabled_tint_color_accent, showIndicator = true, reactToUserInput = false),
+	/**
+	 * If view is expanded or collapsed
+	 */
+	var expanded: Boolean = true,
+	/**
+	 * If true, this will ignore the tries to set current value programmatically when the user is touching the slider.
+	 */
+	var ignoreInputWhileUserInteraction: Boolean = false
 ){
+	sealed class DisableModes(val showIndicator: Boolean, val reactToUserInput: Boolean) {
+		class None(showIndicator: Boolean, reactToUserInput: Boolean): DisableModes(showIndicator, reactToUserInput)
+		class Tint(val tintColor: Int, val tintColorAccent: Int, showIndicator: Boolean, reactToUserInput: Boolean): DisableModes(showIndicator, reactToUserInput)
+		//TODO class Shadow
+	}
+
 	enum class DisplayMode {
 		/**
 		 * Text or icon
@@ -72,18 +86,18 @@ data class InkSliderMdl(
 		 * No display
 		 */
 		NONE }
-	
+
 	enum class ColorMode { NORMAL, GRADIENT, GRADIENT_CONTINUOUS }
 	enum class Orientation { VERTICAL, HORIZONTAL }
 	data class Item(val value: Any, val display: Display, val selectable: Boolean = true)
 	data class Display(
-			val string: String? = null,
-			val arrowTintColor: Int? = null,
-			val iconTintColor: Int? = null,
-			val textColor: Int? = null,
-			val icon: Int? = null)
+		val string: String? = null,
+		val arrowTintColor: Int? = null,
+		val iconTintColor: Int? = null,
+		val textColor: Int? = null,
+		val icon: Int? = null)
 	var disabled
 		get() = !enabled
-	    set(value) { enabled = !value }
+		set(value) { enabled = !value }
 	internal var userTouch = false
 }
