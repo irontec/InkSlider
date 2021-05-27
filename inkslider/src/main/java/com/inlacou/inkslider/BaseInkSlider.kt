@@ -560,20 +560,17 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 						linearLayoutDisplayTopLeft?.setMargins(left = it-((linearLayoutDisplayTopLeft?.width?:0)/2)+leftSpacing)
 						linearLayoutDisplayBottomRight?.setMargins(left = it-((linearLayoutDisplayBottomRight?.width?:0)/2)+leftSpacing)
 						ivDisplayCenter?.setMargins(left = it-((ivDisplayCenter?.width?:0)/2)+leftSpacing)
-						linearLayoutDisplayCenterSpecial?.setMargins(left = it-((linearLayoutDisplayCenterSpecial?.width?:0)/2)+leftSpacing)
+						linearLayoutDisplayCenterSpecial?.setMargins(left = it-(resources.getDimension(R.dimen.inkslider_display_center_special_size).toInt()/2)+leftSpacing)
 					}
 				}
 			}
 			VERTICAL -> {
-				Log.d("InkSlider", "vertical position: $currentPosition")
 				currentPosition?.toInt()?.let {
 					if (it in 1 until (linearLayoutColors?.height ?: height)) {
 						linearLayoutDisplayTopLeft?.setMargins(top = it - ((linearLayoutDisplayTopLeft?.height ?: 0) / 2) + topSpacing)
 						linearLayoutDisplayBottomRight?.setMargins(top = it - ((linearLayoutDisplayBottomRight?.height ?: 0) / 2) + topSpacing)
 						ivDisplayCenter?.setMargins(top = it - ((ivDisplayCenter?.height ?: 0) / 2) + topSpacing)
 						linearLayoutDisplayCenterSpecial?.setMargins(top = it - (resources.getDimension(R.dimen.inkslider_display_center_special_size).toInt() / 2) + topSpacing)
-					} else {
-						Log.d("InkSlider", "vertical else ${(linearLayoutColors?.height ?: height)}")
 					}
 				}
 			}

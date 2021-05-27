@@ -19,15 +19,15 @@ class BasicSoundSlider @JvmOverloads constructor(context: Context, attrs: Attrib
 	init {
 		context.resources?.obtainTypedArray(R.array.sounds)?.let { array ->
 			sounds = (0 until array.length())
-					.reversed()
-					.mapIndexed { index, it ->
-						InkSliderMdl.Item(value = it, selectable = index != 0, display = InkSliderMdl.Display(icon = array.getResourceId(index, -1), iconTintColor = R.color.white_basic))
-					}
+				.reversed()
+				.mapIndexed { index, it ->
+					InkSliderMdl.Item(value = it, selectable = index != 0, display = InkSliderMdl.Display(icon = array.getResourceId(index, -1), iconTintColor = R.color.white_basic))
+				}
 			model = InkSliderMdl(
-					colors = colors
-					, values = sounds
-					, displayMode = InkSliderMdl.DisplayMode.LEFT_TOP
-					, onValueSet = { item: InkSliderMdl.Item, b: Boolean ->
+				colors = colors
+				, values = sounds
+				, displayMode = InkSliderMdl.DisplayMode.LEFT_TOP
+				, onValueSet = { item: InkSliderMdl.Item, b: Boolean ->
 				onValueSet?.invoke(item, b)
 			}, onValueChange = { item: InkSliderMdl.Item, b: Boolean ->
 				onValueChange?.invoke(item, b)

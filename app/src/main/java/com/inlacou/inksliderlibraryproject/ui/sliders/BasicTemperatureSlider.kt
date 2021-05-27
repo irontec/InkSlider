@@ -17,16 +17,17 @@ class BasicTemperatureSlider @JvmOverloads constructor(context: Context, attrs: 
 	
 	init {
 		temperatures = (170 .. 270)
-				.filter { it.toString().last()=='0' || it.toString().last()=='5' }
-				.map { it.toDouble() }.reversed()
-				.mapIndexed { index, it -> InkSliderMdl.Item(value = it / 10, display = InkSliderMdl.Display("${it / 10}º", textColor = colors[(index + 1) / 2])) }
-				.toMutableList()
+			.filter { it.toString().last()=='0' || it.toString().last()=='5' }
+			.map { it.toDouble() }.reversed()
+			.mapIndexed { index, it -> InkSliderMdl.Item(value = it / 10, display = InkSliderMdl.Display("${it / 10}º", textColor = colors[(index + 1) / 2])) }
+			.toMutableList()
 		temperatures.add(0, InkSliderMdl.Item(value = 27, display = InkSliderMdl.Display(string = "27.0º", textColor = colors[0]), selectable = false))
 		model = InkSliderMdl(
-				colors = colors
-				, values = temperatures
-				, displayMode = InkSliderMdl.DisplayMode.CENTER
-				, onValueSet = { item: InkSliderMdl.Item, b: Boolean ->
+			colors = colors
+			, values = temperatures
+			, displayMode = InkSliderMdl.DisplayMode.CENTER_SPECIAL
+			, disableMode = InkSliderMdl.DisableModes.Tint(tintColor = R.color.yellow_basic, tintColorAccent = R.color.green_basic, reactToUserInput = true, showIndicator = true)
+			, onValueSet = { item: InkSliderMdl.Item, b: Boolean ->
 			onValueSet?.invoke(item, b)
 		}, onValueChange = { item: InkSliderMdl.Item, b: Boolean ->
 			onValueChange?.invoke(item, b)

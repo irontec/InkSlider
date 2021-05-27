@@ -25,6 +25,7 @@
         app:layout_constraintBottom_toBottomOf="@id/linearLayout_colors"
         app:layout_constraintStart_toStartOf="parent">
         <ImageView
+            android:id="@+id/iv_plus"
             android:layout_width="@dimen/inkslider_button_icon_width"
             android:layout_height="@dimen/inkslider_button_icon_height"
             app:tint="@color/inkslider_plus_minus_button_icon_color"
@@ -64,6 +65,7 @@
         app:layout_constraintStart_toEndOf="@id/linearLayout_colors"
         android:layout_marginStart="@dimen/inkslider_button_bottom_margin_top_right">
         <ImageView
+            android:id="@+id/iv_minus"
             android:layout_width="@dimen/inkslider_button_icon_width"
             android:layout_height="@dimen/inkslider_button_icon_height"
             android:contentDescription="@string/button_to_increase_value"

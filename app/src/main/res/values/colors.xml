@@ -6,6 +6,9 @@
 
 	<color name="white_basic">#FFFFFF</color>
 	<color name="black_basic">#000000</color>
+	<color name="cyan_basic">#0FF</color>
+	<color name="yellow_basic">#FF0</color>
+	<color name="green_basic">#0F0</color>
 
 	<array name="temperature_slider">
 		<item>@color/temp_0</item>
