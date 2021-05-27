@@ -493,6 +493,17 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		
 		//Style display
 		model.currentItem.display.let { display ->
+			var color: Int? = null
+			var colorAccent: Int = Color.WHITE
+			display.textColor?.let {
+				color = it
+			}
+			val disableMode = model.disableMode
+			if(model.disabled && disableMode is InkSliderMdl.DisableModes.Tint) {
+				color = resources.getColorCompat(disableMode.tintColor)
+				colorAccent = resources.getColorCompat(disableMode.tintColorAccent)
+			}
+			
 			//Set display text
 			display.string.let {
 				if (it != null) {
@@ -527,14 +538,6 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 				ivDisplayRightArrow?.tint(it)
 			}
 			linearLayoutDisplayCenterSpecial?.let { view ->
-				var color: Int? = null
-				display.textColor?.let {
-					color = it
-				}
-				val disableMode = model.disableMode
-				if(model.disabled && disableMode is InkSliderMdl.DisableModes.Tint) {
-					color = resources.getColorCompat(disableMode.tintColor)
-				}
 				color?.let {
 					view.layoutParams = view.layoutParams?.apply {
 						width = if (touching) indicatorCenterSpecialSizeSelected else indicatorCenterSpecialSize
@@ -542,7 +545,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 					}
 					view.background = GradientDrawable().apply {
 						cornerRadius = 300f
-						setStroke(indicatorCenterSpecialStrokeWidth, Color.WHITE)
+						setStroke(indicatorCenterSpecialStrokeWidth, colorAccent)
 						setColor(it)
 					}
 				}
