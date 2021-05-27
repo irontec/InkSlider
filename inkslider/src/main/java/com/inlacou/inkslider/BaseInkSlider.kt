@@ -494,14 +494,14 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		//Style display
 		model.currentItem.display.let { display ->
 			var color: Int? = null
-			var colorAccent: Int = Color.WHITE
+			var colorAccent: Int? = null
 			display.textColor?.let {
 				color = it
 			}
 			val disableMode = model.disableMode
 			if(model.disabled && disableMode is InkSliderMdl.DisableModes.Tint) {
 				color = resources.getColorCompat(disableMode.tintColor)
-				colorAccent = resources.getColorCompat(disableMode.tintColorAccent)
+				colorAccent = disableMode.tintColorAccent
 			}
 			
 			//Set display text
@@ -515,12 +515,12 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			}
 			//Set display text color
 			display.textColor?.let {
-				tvDisplayRight?.setTextColor(it)
-				tvDisplayLeft?.setTextColor(it)
+				tvDisplayRight?.setTextColor(colorAccent?.toColorCompat(resources) ?: it)
+				tvDisplayLeft?.setTextColor(colorAccent?.toColorCompat(resources) ?: it)
 			}
 			//Set display icon
 			display.icon.let {
-				if (it != null) {
+				if (it!=null) {
 					ivDisplayLeft?.setDrawableRes(it)
 					ivDisplayRight?.setDrawableRes(it)
 				}
@@ -529,14 +529,13 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			}
 			//Set display icon color
 			display.iconTintColor?.let {
-				ivDisplayLeft?.tint(it)
-				ivDisplayRight?.tint(it)
+				ivDisplayLeft?.tint(colorAccent ?: it)
+				ivDisplayRight?.tint(colorAccent ?: it)
 			}
-			//Set display icon color
-			display.arrowTintColor?.let {
-				ivDisplayLeftArrow?.tint(it)
-				ivDisplayRightArrow?.tint(it)
-			}
+			//Set display arrow color
+			ivDisplayLeftArrow?.tint(colorAccent ?: display.arrowTintColor ?: R.color.inkslider_indicator_arrow_color)
+			ivDisplayRightArrow?.tint(colorAccent ?: display.arrowTintColor ?: R.color.inkslider_indicator_arrow_color)
+			
 			linearLayoutDisplayCenterSpecial?.let { view ->
 				color?.let {
 					view.layoutParams = view.layoutParams?.apply {
@@ -545,7 +544,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 					}
 					view.background = GradientDrawable().apply {
 						cornerRadius = 300f
-						setStroke(indicatorCenterSpecialStrokeWidth, colorAccent)
+						setStroke(indicatorCenterSpecialStrokeWidth, colorAccent?.toColorCompat(resources) ?: Color.WHITE)
 						setColor(it)
 					}
 				}
@@ -553,17 +552,14 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		}
 		
 		//Set display position
-		when(orientation){
+		when(orientation) {
 			HORIZONTAL -> {
-				Log.d("InkSlider", "horizontal position: $currentPosition")
 				currentPosition?.toInt()?.let {
 					if (it in 1 until (linearLayoutColors?.width ?: width)) {
 						linearLayoutDisplayTopLeft?.setMargins(left = it-((linearLayoutDisplayTopLeft?.width?:0)/2)+leftSpacing)
 						linearLayoutDisplayBottomRight?.setMargins(left = it-((linearLayoutDisplayBottomRight?.width?:0)/2)+leftSpacing)
 						linearLayoutDisplayCenter?.setMargins(left = it-((linearLayoutDisplayCenter?.width?:0)/2)+leftSpacing)
 						linearLayoutDisplayCenterSpecial?.setMargins(left = it-((linearLayoutDisplayCenterSpecial?.width?:0)/2)+leftSpacing)
-					}else{
-						Log.d("InkSlider", "horizontal else ${(linearLayoutColors?.width ?: width)}")
 					}
 				}
 			}

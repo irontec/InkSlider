@@ -163,12 +163,17 @@ internal fun View.onDrawn(callback: () -> Unit){
 	viewTreeObserver?.addOnGlobalLayoutListener(listener)
 }
 
-internal fun ImageView.tint(colorResId: Int){
-	ImageViewCompat.setImageTintList(this, ColorStateList.valueOf(this.context.getColorCompat(colorResId)))
+internal fun ImageView.tint(colorResId: Int?){
+	if(colorResId==null) this.clearColorFilter()
+	else ImageViewCompat.setImageTintList(this, ColorStateList.valueOf(this.context.getColorCompat(colorResId)))
 }
 
 internal fun Context.getColorCompat(resId: Int): Int {
 	return resources.getColorCompat(resId)
+}
+
+internal fun Int.toColorCompat(resources: Resources): Int {
+	return resources.getColorCompat(this)
 }
 
 internal fun Resources.getColorCompat(resId: Int): Int {
