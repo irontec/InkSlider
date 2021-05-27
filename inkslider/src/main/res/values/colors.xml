@@ -9,5 +9,5 @@
 	<color name="inkslider_plus_minus_button_icon_color_disabled">#444</color>
 	<color name="inkslider_indicator_arrow_color">#FFF</color>
 	<color name="inkslider_disabled_tint_color">#6C7A85</color>
-	<color name="inkslider_disabled_tint_color_accent">#B9C8D5</color>
+	<color name="inkslider_disabled_tint_color_accent">#F00</color>
 </resources>

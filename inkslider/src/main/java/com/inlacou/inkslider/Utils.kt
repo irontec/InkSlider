@@ -164,7 +164,7 @@ internal fun View.onDrawn(callback: () -> Unit){
 }
 
 internal fun ImageView.tint(colorResId: Int?){
-	if(colorResId==null) this.clearColorFilter()
+	if(colorResId==null) ImageViewCompat.setImageTintList(this, null)
 	else ImageViewCompat.setImageTintList(this, ColorStateList.valueOf(this.context.getColorCompat(colorResId)))
 }
 

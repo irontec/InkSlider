@@ -11,7 +11,6 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.*
 import com.inlacou.inkslider.InkSliderMdl.Orientation.*
-import com.inlacou.pripple.RippleLinearLayout
 import com.inlacou.pripple.RippleRelativeLayout
 import com.inlacou.pripple.batchEdit
 import kotlin.math.roundToInt
@@ -26,7 +25,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 	private var linearLayoutColors: LinearLayout? = null
 	private var linearLayoutDisplayTopLeft: View? = null
 	private var linearLayoutDisplayBottomRight: View? = null
-	private var linearLayoutDisplayCenter: View? = null
+	private var ivDisplayCenter: ImageView? = null
 	private var tvDisplayLeft: TextView? = null
 	private var tvDisplayRight: TextView? = null
 	private var ivDisplayLeft: ImageView? = null
@@ -44,7 +43,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		linearLayoutColors = findViewById(R.id.linearLayout_colors)
 		linearLayoutDisplayTopLeft = findViewById(R.id.linearLayout_display_top_left)
 		linearLayoutDisplayBottomRight = findViewById(R.id.linearLayout_display_bottom_right)
-		linearLayoutDisplayCenter = findViewById(R.id.linearLayout_display_center)
+		ivDisplayCenter = findViewById(R.id.iv_display_center)
 		tvDisplayLeft = findViewById(R.id.tv_display_left)
 		tvDisplayRight = findViewById(R.id.tv_display_right)
 		ivDisplayLeft = findViewById(R.id.iv_display_left)
@@ -194,17 +193,17 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 			VERTICAL -> {
 				linearLayoutDisplayTopLeft?.setMargins(top = 0)
 				linearLayoutDisplayBottomRight?.setMargins(top = 0)
-				linearLayoutDisplayCenter?.setMargins(top = 0)
+				ivDisplayCenter?.setMargins(top = 0)
 			}
 			HORIZONTAL -> {
 				linearLayoutDisplayTopLeft?.setMargins(left = 0)
 				linearLayoutDisplayBottomRight?.setMargins(left = 0)
-				linearLayoutDisplayCenter?.setMargins(left = 0)
+				ivDisplayCenter?.setMargins(left = 0)
 			}
 		}
 		linearLayoutDisplayTopLeft?.setVisible(visible = false, holdSpaceOnDissapear = visibleTopLeft)
 		linearLayoutDisplayBottomRight?.setVisible(visible = false, holdSpaceOnDissapear = visibleBottomRight)
-		linearLayoutDisplayCenter?.setVisible(visible = false, holdSpaceOnDissapear = false)
+		ivDisplayCenter?.setVisible(visible = false, holdSpaceOnDissapear = false)
 		linearLayoutDisplayCenterSpecial?.setVisible(visible = false, holdSpaceOnDissapear = false)
 		
 		ivDisplayRight?.setVisible(visible = false, holdSpaceOnDissapear = false)
@@ -488,7 +487,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		//Shows/hides displays depending on current DisplayMode
 		linearLayoutDisplayTopLeft?.setVisible(visibleTopLeft && !(model.disabled && !model.disableMode.showIndicator), false)
 		linearLayoutDisplayBottomRight?.setVisible(visibleBottomRight && !(model.disabled && !model.disableMode.showIndicator), false)
-		linearLayoutDisplayCenter?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.CENTER && !(model.disabled && !model.disableMode.showIndicator), false)
+		ivDisplayCenter?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.CENTER && !(model.disabled && !model.disableMode.showIndicator), false)
 		linearLayoutDisplayCenterSpecial?.setVisible(model.displayMode==InkSliderMdl.DisplayMode.CENTER_SPECIAL && !(model.disabled && !model.disableMode.showIndicator), false)
 		
 		//Style display
@@ -503,6 +502,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 				color = resources.getColorCompat(disableMode.tintColor)
 				colorAccent = disableMode.tintColorAccent
 			}
+			Log.d("InkSlider", "color: $color | colorAccent: $colorAccent")
 			
 			//Set display text
 			display.string.let {
@@ -514,10 +514,9 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 				tvDisplayLeft?.setVisible(it!=null, false)
 			}
 			//Set display text color
-			display.textColor?.let {
-				tvDisplayRight?.setTextColor(colorAccent?.toColorCompat(resources) ?: it)
-				tvDisplayLeft?.setTextColor(colorAccent?.toColorCompat(resources) ?: it)
-			}
+			tvDisplayRight?.setTextColor(colorAccent?.toColorCompat(resources) ?: display.textColor ?: Color.WHITE)
+			tvDisplayLeft?.setTextColor(colorAccent?.toColorCompat(resources) ?: display.textColor ?: Color.WHITE)
+			
 			//Set display icon
 			display.icon.let {
 				if (it!=null) {
@@ -528,10 +527,12 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 				ivDisplayLeft?.setVisible(it!=null, false)
 			}
 			//Set display icon color
-			display.iconTintColor?.let {
-				ivDisplayLeft?.tint(colorAccent ?: it)
-				ivDisplayRight?.tint(colorAccent ?: it)
-			}
+			ivDisplayLeft?.tint(colorAccent ?: display.iconTintColor)
+			ivDisplayRight?.tint(colorAccent ?: display.iconTintColor)
+			
+			//Set display icon color
+			ivDisplayCenter?.tint(colorAccent ?: display.iconTintColor)
+			
 			//Set display arrow color
 			ivDisplayLeftArrow?.tint(colorAccent ?: display.arrowTintColor ?: R.color.inkslider_indicator_arrow_color)
 			ivDisplayRightArrow?.tint(colorAccent ?: display.arrowTintColor ?: R.color.inkslider_indicator_arrow_color)
@@ -558,7 +559,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 					if (it in 1 until (linearLayoutColors?.width ?: width)) {
 						linearLayoutDisplayTopLeft?.setMargins(left = it-((linearLayoutDisplayTopLeft?.width?:0)/2)+leftSpacing)
 						linearLayoutDisplayBottomRight?.setMargins(left = it-((linearLayoutDisplayBottomRight?.width?:0)/2)+leftSpacing)
-						linearLayoutDisplayCenter?.setMargins(left = it-((linearLayoutDisplayCenter?.width?:0)/2)+leftSpacing)
+						ivDisplayCenter?.setMargins(left = it-((ivDisplayCenter?.width?:0)/2)+leftSpacing)
 						linearLayoutDisplayCenterSpecial?.setMargins(left = it-((linearLayoutDisplayCenterSpecial?.width?:0)/2)+leftSpacing)
 					}
 				}
@@ -569,7 +570,7 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 					if (it in 1 until (linearLayoutColors?.height ?: height)) {
 						linearLayoutDisplayTopLeft?.setMargins(top = it - ((linearLayoutDisplayTopLeft?.height ?: 0) / 2) + topSpacing)
 						linearLayoutDisplayBottomRight?.setMargins(top = it - ((linearLayoutDisplayBottomRight?.height ?: 0) / 2) + topSpacing)
-						linearLayoutDisplayCenter?.setMargins(top = it - ((linearLayoutDisplayCenter?.height ?: 0) / 2) + topSpacing)
+						ivDisplayCenter?.setMargins(top = it - ((ivDisplayCenter?.height ?: 0) / 2) + topSpacing)
 						linearLayoutDisplayCenterSpecial?.setMargins(top = it - (resources.getDimension(R.dimen.inkslider_display_center_special_size).toInt() / 2) + topSpacing)
 					} else {
 						Log.d("InkSlider", "vertical else ${(linearLayoutColors?.height ?: height)}")
