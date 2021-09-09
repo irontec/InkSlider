@@ -159,6 +159,16 @@ abstract class BaseInkSlider @JvmOverloads constructor(context: Context, attrs: 
 		model.values.find { it.display.string==display }?.let { return setCurrentItem(it, fireListener) }
 		return false
 	}
+
+	fun increase() {
+		controller.onPlusClick()
+		controller.onPlusRelease()
+	}
+
+	fun decrease() {
+		controller.onMinusClick()
+		controller.onMinusRelease()
+	}
 	
 	/**
 	 * Returns whether the component is enabled or not
